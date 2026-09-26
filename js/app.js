@@ -190,11 +190,8 @@ function cargarPagina(page) {
 
         case "menu":
 
-            mostrarPlaceholder(
-                "☰",
-                "Menú / Productos",
-                "Aquí administraremos los productos disponibles para los pedidos."
-            );
+            appContent.innerHTML =
+                renderMenu();
 
             break;
 

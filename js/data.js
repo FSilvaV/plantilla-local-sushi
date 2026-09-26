@@ -99,36 +99,72 @@ const ScartData = {
 
 
     productos: [
-        {
-            id: 1,
-            nombre: "California Roll",
-            categoria: "Sushi",
-            precio: 8900,
-            activo: true
-        },
 
-        {
-            id: 2,
-            nombre: "Handroll Pollo",
-            categoria: "Handroll",
-            precio: 5500,
-            activo: true
-        },
+    {
+        id: 1,
+        nombre: "California Roll",
+        categoria: "Sushi",
+        descripcion:
+            "Kanikama, palta y queso crema.",
+        precio: 8900,
+        imagen: "",
+        activo: true
+    },
 
-        {
-            id: 3,
-            nombre: "Salmón Roll",
-            categoria: "Sushi",
-            precio: 9900,
-            activo: true
-        },
+    {
+        id: 2,
+        nombre: "Handroll Pollo",
+        categoria: "Handroll",
+        descripcion:
+            "Pollo, queso crema y cebollín.",
+        precio: 5500,
+        imagen: "",
+        activo: true
+    },
 
-        {
-            id: 4,
-            nombre: "Bebida 1.5L",
-            categoria: "Bebidas",
-            precio: 3000,
-            activo: true
-        }
-    ]
+    {
+        id: 3,
+        nombre: "Salmón Roll",
+        categoria: "Sushi",
+        descripcion:
+            "Salmón, palta y queso crema.",
+        precio: 9900,
+        imagen: "",
+        activo: true
+    },
+
+    {
+        id: 4,
+        nombre: "Bebida 1.5L",
+        categoria: "Bebidas",
+        descripcion:
+            "Bebida familiar 1.5 litros.",
+        precio: 3000,
+        imagen: "",
+        activo: true
+    },
+
+    {
+        id: 5,
+        nombre: "Promo 30 piezas",
+        categoria: "Promoción",
+        descripcion:
+            "Selección de 30 piezas variadas.",
+        precio: 16990,
+        imagen: "",
+        activo: true
+    },
+
+    {
+        id: 6,
+        nombre: "Papas Fritas",
+        categoria: "Extra",
+        descripcion:
+            "Porción de papas fritas.",
+        precio: 3500,
+        imagen: "",
+        activo: false
+    }
+
+]
 };
