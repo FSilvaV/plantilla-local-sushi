@@ -135,11 +135,8 @@ function cargarPagina(page) {
 
         case "nuevo-pedido":
 
-            mostrarPlaceholder(
-                "🍣",
-                "Nuevo Pedido",
-                "Aquí construiremos el asistente de creación de pedidos."
-            );
+            appContent.innerHTML =
+                renderNuevoPedido();
 
             break;
 
