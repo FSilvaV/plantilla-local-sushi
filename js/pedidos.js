@@ -3,6 +3,10 @@ function renderPedidos() {
         pedido => !["entregado", "anulado"].includes(pedido.estado)
     );
 
+    const pedidosCompletados = ScartData.pedidos.filter(
+    pedido => pedido.estado === "entregado"
+    );
+
     const delivery = pedidosActivos.filter(p => p.tipo === "delivery");
     const retiro = pedidosActivos.filter(p => p.tipo === "retiro");
     const local = pedidosActivos.filter(p => p.tipo === "local");
@@ -62,7 +66,10 @@ function renderPedidos() {
                     "local"
                 )}
 
-            </div>
+           </div>
+
+            ${renderPedidosCompletados(pedidosCompletados)}
+
         </div>
     `;
 }
@@ -106,6 +113,228 @@ function renderGrupoPedidos(titulo, descripcion, pedidos, tipo) {
     `;
 }
 
+function renderPedidosCompletados(pedidos) {
+    const ordenados = [...pedidos].sort(
+        (a, b) =>
+            new Date(b.fechaActualizacion) -
+            new Date(a.fechaActualizacion)
+    );
+
+    return `
+        <section class="pedidos-completados">
+
+            <div class="pedidos-completados-header">
+
+                <div>
+                    <h3>Pedidos completados</h3>
+                    <p>
+                        Historial de pedidos entregados.
+                    </p>
+                </div>
+
+                <div class="completados-filtros">
+
+                    <button
+                        class="completado-filtro active"
+                        data-filtro-completado="todos"
+                        onclick="filtrarPedidosCompletados('todos', this)"
+                    >
+                        Todos
+                    </button>
+
+                    <button
+                        class="completado-filtro"
+                        data-filtro-completado="delivery"
+                        onclick="filtrarPedidosCompletados('delivery', this)"
+                    >
+                        Delivery
+                    </button>
+
+                    <button
+                        class="completado-filtro"
+                        data-filtro-completado="retiro"
+                        onclick="filtrarPedidosCompletados('retiro', this)"
+                    >
+                        Retiro
+                    </button>
+
+                    <button
+                        class="completado-filtro"
+                        data-filtro-completado="local"
+                        onclick="filtrarPedidosCompletados('local', this)"
+                    >
+                        Local
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                class="completados-lista"
+                id="pedidos-completados-lista"
+            >
+                ${renderListaPedidosCompletados(ordenados)}
+            </div>
+
+        </section>
+    `;
+}
+
+
+function renderListaPedidosCompletados(pedidos) {
+    if (!pedidos.length) {
+        return `
+            <div class="pedidos-vacio">
+                Todavía no hay pedidos completados.
+            </div>
+        `;
+    }
+
+    return pedidos
+        .map(pedido => {
+            const fecha = new Date(
+                pedido.fechaActualizacion ||
+                pedido.fechaCreacion
+            );
+
+            const hora = fecha.toLocaleTimeString(
+                "es-CL",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+            const tipoNombre = {
+                delivery: "Delivery",
+                retiro: "Retiro",
+                local: "Local"
+            };
+
+            const pagoTexto =
+                pedido.pago?.estado === "pagado"
+                    ? "Pagado"
+                    : "Pago pendiente";
+
+            return `
+                <div
+                    class="completado-item"
+                    data-tipo="${pedido.tipo}"
+                >
+
+                    <div class="completado-identificacion">
+
+                        <strong>
+                            ${pedido.numero}
+                        </strong>
+
+                        <span>
+                            ${obtenerNombreClientePedido(pedido)}
+                        </span>
+
+                    </div>
+
+                    <div class="completado-dato">
+
+                        <span>Tipo</span>
+
+                        <strong>
+                            ${tipoNombre[pedido.tipo] || pedido.tipo}
+                        </strong>
+
+                    </div>
+
+                    <div class="completado-dato">
+
+                        <span>Finalizado</span>
+
+                        <strong>
+                            ${hora}
+                        </strong>
+
+                    </div>
+
+                    <div class="completado-dato">
+
+                        <span>Pago</span>
+
+                        <strong
+                            class="${
+                                pedido.pago?.estado === "pagado"
+                                    ? "completado-pagado"
+                                    : "completado-pendiente"
+                            }"
+                        >
+                            ${pagoTexto}
+                        </strong>
+
+                    </div>
+
+                    <div class="completado-total">
+
+                        <span>Total</span>
+
+                        <strong>
+                            ${formatearDinero(pedido.total)}
+                        </strong>
+
+                    </div>
+
+                    <button
+                        class="btn-secondary"
+                        onclick="verDetallePedido(${pedido.id})"
+                    >
+                        Ver detalle
+                    </button>
+
+                </div>
+            `;
+        })
+        .join("");
+}
+
+
+function filtrarPedidosCompletados(tipo, boton) {
+    document
+        .querySelectorAll(".completado-filtro")
+        .forEach(elemento => {
+            elemento.classList.remove("active");
+        });
+
+    if (boton) {
+        boton.classList.add("active");
+    }
+
+    const pedidosCompletados =
+        ScartData.pedidos
+            .filter(
+                pedido =>
+                    pedido.estado === "entregado"
+            )
+            .filter(
+                pedido =>
+                    tipo === "todos" ||
+                    pedido.tipo === tipo
+            )
+            .sort(
+                (a, b) =>
+                    new Date(b.fechaActualizacion) -
+                    new Date(a.fechaActualizacion)
+            );
+
+    const contenedor =
+        document.getElementById(
+            "pedidos-completados-lista"
+        );
+
+    if (!contenedor) return;
+
+    contenedor.innerHTML =
+        renderListaPedidosCompletados(
+            pedidosCompletados
+        );
+}
 
 function renderPedidoCard(pedido) {
     const minutos = obtenerMinutosPedido(pedido.fechaCreacion);
@@ -431,11 +660,274 @@ function verDetallePedido(id) {
 
     if (!pedido) return;
 
-    console.log("Detalle pedido:", pedido);
+    cerrarDetallePedido();
 
-    mostrarToast(
-        `Detalle ${pedido.numero} disponible en consola por ahora.`
+    const minutos = obtenerMinutosPedido(
+        pedido.fechaCreacion
     );
+
+    const fecha = new Date(
+        pedido.fechaCreacion
+    );
+
+    const hora = fecha.toLocaleTimeString(
+        "es-CL",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+    const tipoNombre = {
+        delivery: "Delivery",
+        retiro: "Retiro",
+        local: "Servicio Local"
+    };
+
+    const estadoNombre = {
+        recibido: "Recibido",
+        confirmado: "Confirmado",
+        preparacion: "En preparación",
+        listo: "Listo",
+        entregado: "Entregado",
+        anulado: "Anulado"
+    };
+
+    let informacionEntrega = "";
+
+    if (pedido.tipo === "delivery") {
+        informacionEntrega = `
+            <div class="detalle-pedido-bloque">
+                <span>Dirección</span>
+                <strong>
+                    ${pedido.cliente.direccion || "Sin dirección"}
+                </strong>
+
+                ${
+                    pedido.cliente.referencia
+                        ? `
+                            <small>
+                                ${pedido.cliente.referencia}
+                            </small>
+                        `
+                        : ""
+                }
+            </div>
+        `;
+    }
+
+    if (pedido.tipo === "local") {
+        const mesa = ScartData.mesas.find(
+            mesa =>
+                Number(mesa.id) ===
+                Number(pedido.mesaId)
+        );
+
+        informacionEntrega = `
+            <div class="detalle-pedido-bloque">
+                <span>Mesa</span>
+
+                <strong>
+                    ${
+                        mesa
+                            ? mesa.nombre
+                            : pedido.esperaMesa
+                                ? "En espera de mesa"
+                                : "Sin mesa asignada"
+                    }
+                </strong>
+            </div>
+        `;
+    }
+
+    const productosHTML = pedido.productos
+        .map(producto => {
+            const subtotal =
+                producto.precio *
+                producto.cantidad;
+
+            return `
+                <div class="detalle-producto">
+                    <div>
+                        <strong>
+                            ${producto.cantidad}x
+                            ${producto.nombre}
+                        </strong>
+
+                        <span>
+                            ${formatearDinero(producto.precio)}
+                            c/u
+                        </span>
+                    </div>
+
+                    <strong>
+                        ${formatearDinero(subtotal)}
+                    </strong>
+                </div>
+            `;
+        })
+        .join("");
+
+    const modal = document.createElement("div");
+
+    modal.id = "pedido-detalle-modal";
+    modal.className = "pedido-modal-overlay";
+
+    modal.innerHTML = `
+        <div class="pedido-modal">
+
+            <div class="pedido-modal-header">
+
+                <div>
+                    <span class="pedido-modal-label">
+                        ${tipoNombre[pedido.tipo] || "Pedido"}
+                    </span>
+
+                    <h2>${pedido.numero}</h2>
+
+                    <p>
+                        ${hora} · ${minutos} min transcurridos
+                    </p>
+                </div>
+
+                <button
+                    class="pedido-modal-cerrar"
+                    onclick="cerrarDetallePedido()"
+                    aria-label="Cerrar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="pedido-modal-body">
+
+                <div class="detalle-pedido-grid">
+
+                    <div class="detalle-pedido-bloque">
+                        <span>Cliente</span>
+
+                        <strong>
+                            ${obtenerNombreClientePedido(pedido)}
+                        </strong>
+
+                        ${
+                            pedido.cliente.telefono
+                                ? `
+                                    <small>
+                                        ${pedido.cliente.telefono}
+                                    </small>
+                                `
+                                : ""
+                        }
+                    </div>
+
+                    <div class="detalle-pedido-bloque">
+                        <span>Estado pedido</span>
+
+                        <strong>
+                            ${estadoNombre[pedido.estado] || pedido.estado}
+                        </strong>
+                    </div>
+
+                    ${informacionEntrega}
+
+                    <div class="detalle-pedido-bloque">
+                        <span>Forma de pago</span>
+
+                        <strong>
+                            ${formatearMetodoPago(pedido.pago)}
+                        </strong>
+
+                        <small>
+                            ${
+                                pedido.pago.estado === "pagado"
+                                    ? "Pago confirmado"
+                                    : "Pago pendiente"
+                            }
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="detalle-pedido-seccion">
+
+                    <h3>Productos</h3>
+
+                    <div class="detalle-productos">
+                        ${productosHTML}
+                    </div>
+
+                </div>
+
+
+                ${
+                    pedido.observaciones
+                        ? `
+                            <div class="detalle-pedido-seccion">
+
+                                <h3>Observaciones</h3>
+
+                                <div class="detalle-observacion">
+                                    ${pedido.observaciones}
+                                </div>
+
+                            </div>
+                        `
+                        : ""
+                }
+
+
+                <div class="detalle-pedido-total">
+
+                    <span>Total pedido</span>
+
+                    <strong>
+                        ${formatearDinero(pedido.total)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="pedido-modal-footer">
+
+                <button
+                    class="btn-secondary"
+                    onclick="cerrarDetallePedido()"
+                >
+                    Cerrar
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    modal.addEventListener(
+        "click",
+        event => {
+            if (event.target === modal) {
+                cerrarDetallePedido();
+            }
+        }
+    );
+
+    document.body.appendChild(modal);
+}
+
+
+function cerrarDetallePedido() {
+    const modal = document.getElementById(
+        "pedido-detalle-modal"
+    );
+
+    if (modal) {
+        modal.remove();
+    }
 }
 
 

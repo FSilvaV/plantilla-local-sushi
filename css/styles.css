@@ -3290,6 +3290,398 @@ button {
     }
 }
 
+/* =========================
+   DETALLE PEDIDO
+========================= */
+
+.pedido-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(3px);
+}
+
+.pedido-modal {
+    width: min(620px, 100%);
+    max-height: 90vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+.pedido-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 20px;
+
+    padding: 20px 22px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.pedido-modal-header h2 {
+    margin: 3px 0;
+    font-size: 24px;
+}
+
+.pedido-modal-header p {
+    margin: 0;
+
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.pedido-modal-label {
+    color: var(--text-soft);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+.pedido-modal-cerrar {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--text);
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.pedido-modal-cerrar:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pedido-modal-body {
+    padding: 20px 22px;
+
+    overflow-y: auto;
+}
+
+.detalle-pedido-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.detalle-pedido-bloque {
+    padding: 12px;
+
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.detalle-pedido-bloque span,
+.detalle-pedido-bloque small {
+    display: block;
+
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.detalle-pedido-bloque strong {
+    display: block;
+
+    margin: 4px 0;
+
+    font-size: 13px;
+}
+
+.detalle-pedido-seccion {
+    margin-top: 22px;
+}
+
+.detalle-pedido-seccion h3 {
+    margin: 0 0 10px;
+
+    font-size: 14px;
+}
+
+.detalle-productos {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.detalle-producto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 11px 12px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.detalle-producto:last-child {
+    border-bottom: 0;
+}
+
+.detalle-producto > div {
+    min-width: 0;
+}
+
+.detalle-producto strong {
+    font-size: 13px;
+}
+
+.detalle-producto span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.detalle-observacion {
+    padding: 12px;
+
+    background: rgba(234, 179, 8, 0.08);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+    border-radius: 10px;
+
+    font-size: 13px;
+}
+
+.detalle-pedido-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 22px;
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border);
+}
+
+.detalle-pedido-total span {
+    color: var(--text-soft);
+}
+
+.detalle-pedido-total strong {
+    font-size: 22px;
+}
+
+.pedido-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    padding: 14px 22px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+@media (max-width: 600px) {
+
+    .pedido-modal-overlay {
+        padding: 10px;
+    }
+
+    .detalle-pedido-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-modal {
+        max-height: 95vh;
+    }
+}
+
+/* =========================
+   PEDIDOS COMPLETADOS
+========================= */
+
+.pedidos-completados {
+    margin-top: 10px;
+    padding-top: 22px;
+
+    border-top: 1px solid var(--border);
+}
+
+.pedidos-completados-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+
+    margin-bottom: 14px;
+}
+
+.pedidos-completados-header h3 {
+    margin: 0;
+}
+
+.pedidos-completados-header p {
+    margin: 5px 0 0;
+
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.completados-filtros {
+    display: flex;
+    gap: 6px;
+
+    flex-wrap: wrap;
+}
+
+.completado-filtro {
+    padding: 7px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    background: var(--surface);
+    color: var(--text-soft);
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.completado-filtro:hover {
+    color: var(--text);
+}
+
+.completado-filtro.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.completados-lista {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.completado-item {
+    display: grid;
+
+    grid-template-columns:
+        minmax(130px, 1.3fr)
+        minmax(80px, 0.8fr)
+        minmax(80px, 0.8fr)
+        minmax(110px, 1fr)
+        minmax(100px, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.completado-identificacion strong {
+    display: block;
+
+    font-size: 14px;
+}
+
+.completado-identificacion span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.completado-dato span,
+.completado-total span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--text-soft);
+    font-size: 10px;
+}
+
+.completado-dato strong {
+    font-size: 12px;
+}
+
+.completado-total strong {
+    font-size: 14px;
+}
+
+.completado-pagado {
+    color: #22c55e;
+}
+
+.completado-pendiente {
+    color: #eab308;
+}
+
+
+@media (max-width: 950px) {
+
+    .completado-item {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .completado-item button {
+        grid-column: 1 / -1;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .pedidos-completados-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */
