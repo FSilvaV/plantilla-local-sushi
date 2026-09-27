@@ -142,13 +142,7 @@ function cargarPagina(page) {
 
 
         case "pedidos":
-
-            mostrarPlaceholder(
-                "▤",
-                "Pedidos",
-                "Aquí aparecerán Delivery, Retiro y Servicio Local en tiempo real."
-            );
-
+            appContent.innerHTML = renderPedidos();
             break;
 
 

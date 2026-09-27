@@ -2374,25 +2374,272 @@ function cancelarNuevoPedido() {
 ========================================================= */
 
 function confirmarNuevoPedido() {
+    // =========================
+    // 1. VALIDACIONES
+    // =========================
 
-    /*
-        En la siguiente etapa esta función:
-        - generará número de pedido
-        - registrará fecha/hora
-        - iniciará temporizador
-        - ocupará mesa
-        - registrará venta
-        - enviará a Pedidos
-    */
+    if (!nuevoPedido.productos || nuevoPedido.productos.length === 0) {
+        mostrarToast("Debes agregar al menos un producto.");
+        return;
+    }
 
-    mostrarToast(
-        "Pedido listo para registrar"
+    const tipoPedido = nuevoPedido.cliente?.tipo || "";
+
+    if (!tipoPedido) {
+        mostrarToast("Debes seleccionar el tipo de pedido.");
+        return;
+    }
+
+    const total = calcularTotalPedido();
+    const ahora = new Date().toISOString();
+
+
+    // =========================
+    // 2. GENERAR ID Y NÚMERO
+    // =========================
+
+    if (!ScartData.pedidos) {
+        ScartData.pedidos = [];
+    }
+
+    const nuevoId =
+        ScartData.pedidos.length > 0
+            ? Math.max(
+                ...ScartData.pedidos.map(
+                    pedido => Number(pedido.id) || 0
+                )
+            ) + 1
+            : 1;
+
+    const numeroPedido =
+        `P-${String(nuevoId).padStart(3, "0")}`;
+
+
+    // =========================
+    // 3. MESA
+    // =========================
+
+    let mesaId = null;
+
+    if (
+        tipoPedido === "local" &&
+        nuevoPedido.cliente.mesaId &&
+        !nuevoPedido.cliente.esperaMesa
+    ) {
+        mesaId = Number(
+            nuevoPedido.cliente.mesaId
+        );
+    }
+
+
+    // =========================
+    // 4. PRODUCTOS
+    // =========================
+
+    const productos = nuevoPedido.productos.map(
+        item => ({
+            id: item.id,
+            nombre: item.nombre,
+            cantidad: Number(item.cantidad) || 1,
+            precio: Number(item.precio) || 0
+        })
     );
+
+
+    // =========================
+    // 5. PAGO
+    // =========================
+
+    const pagoActual = nuevoPedido.pago || {};
+
+    const metodoPago =
+        pagoActual.metodo || "";
+
+    const estadoPago =
+        pagoActual.estado === "pagado"
+            ? "pagado"
+            : "pendiente";
+
+    const montoRecibido =
+        Number(pagoActual.montoPago) || 0;
+
+    const vuelto =
+        metodoPago === "efectivo"
+            ? Math.max(
+                0,
+                montoRecibido - total
+            )
+            : 0;
+
+    const pago = {
+        metodoPrevisto: metodoPago,
+
+        metodoFinal:
+            estadoPago === "pagado"
+                ? metodoPago
+                : "",
+
+        estado: estadoPago,
+
+        monto: total,
+
+        montoRecibido: montoRecibido,
+
+        vuelto: vuelto,
+
+        codigoTransferencia:
+            pagoActual.codigo || "",
+
+        fechaPago:
+            estadoPago === "pagado"
+                ? ahora
+                : null
+    };
+
+
+    // =========================
+    // 6. CLIENTE
+    // =========================
+
+    const cliente = {
+        nombre:
+            nuevoPedido.cliente?.nombre || "",
+
+        apellido:
+            nuevoPedido.cliente?.apellido || "",
+
+        telefono:
+            nuevoPedido.cliente?.telefono || "",
+
+        direccion:
+            nuevoPedido.cliente?.direccion || "",
+
+        referencia:
+            nuevoPedido.cliente?.referencia || ""
+    };
+
+
+    // =========================
+    // 7. CREAR PEDIDO
+    // =========================
+
+    const pedido = {
+        id: nuevoId,
+
+        numero: numeroPedido,
+
+        tipo: tipoPedido,
+
+        // Futuro:
+        // personal | tablet | qr
+        origen: "personal",
+
+        cliente: cliente,
+
+        productos: productos,
+
+        subtotal: total,
+
+        // Preparado para futura propina
+        propina: 0,
+
+        total: total,
+
+        pago: pago,
+
+        estado: "recibido",
+
+        observaciones:
+            nuevoPedido.observaciones || "",
+
+        fechaCreacion: ahora,
+
+        fechaActualizacion: ahora,
+
+        mesaId: mesaId,
+
+        esperaMesa:
+            tipoPedido === "local"
+                ? Boolean(
+                    nuevoPedido.cliente.esperaMesa
+                )
+                : false,
+
+        historial: [
+            {
+                tipo: "creacion",
+                fecha: ahora,
+                detalle:
+                    "Pedido creado desde Nuevo Pedido"
+            }
+        ]
+    };
+
+
+    // =========================
+    // 8. GUARDAR PEDIDO
+    // =========================
+
+    ScartData.pedidos.push(pedido);
+
+
+    // =========================
+    // 9. OCUPAR MESA
+    // =========================
+
+    if (mesaId) {
+        const mesa = ScartData.mesas.find(
+            mesa =>
+                Number(mesa.id) === mesaId
+        );
+
+        if (mesa) {
+            mesa.estado = "ocupada";
+
+            mesa.pedidoId =
+                pedido.id;
+
+            mesa.fechaOcupacion =
+                ahora;
+        }
+    }
+
+
+    // =========================
+    // 10. CONFIRMACIÓN
+    // =========================
 
     console.log(
-        "PEDIDO DEMO:",
-        nuevoPedido
+        "Pedido creado correctamente:",
+        pedido
     );
+
+    mostrarToast(
+        `${numeroPedido} creado correctamente`
+    );
+
+
+    // =========================
+    // 11. LIMPIAR FORMULARIO
+    // =========================
+
+    nuevoPedido =
+        crearPedidoVacio();
+
+    pasoNuevoPedido = 1;
+
+    categoriaPedido =
+        "Todos";
+
+    busquedaPedido =
+        "";
+
+
+    // =========================
+    // 12. IR A PEDIDOS
+    // =========================
+
+    navegar("pedidos");
 }
 
 

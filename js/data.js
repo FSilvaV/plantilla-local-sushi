@@ -166,5 +166,185 @@ const ScartData = {
         activo: false
     }
 
+],
+
+pedidos: [
+    {
+        id: 1,
+        numero: "P-001",
+        tipo: "delivery",
+        origen: "personal",
+
+        cliente: {
+            nombre: "Camila",
+            apellido: "Rojas",
+            telefono: "912345678",
+            direccion: "Villa El Portal, Ovalle",
+            referencia: "Casa esquina"
+        },
+
+        productos: [
+            {
+                id: 1,
+                nombre: "California Roll",
+                cantidad: 2,
+                precio: 8900
+            },
+            {
+                id: 4,
+                nombre: "Bebida 1.5L",
+                cantidad: 1,
+                precio: 3000
+            }
+        ],
+
+        subtotal: 20800,
+        propina: 0,
+        total: 20800,
+
+        pago: {
+            metodoPrevisto: "efectivo",
+            metodoFinal: "",
+            estado: "pendiente",
+            monto: 20800,
+            montoRecibido: 25000,
+            vuelto: 4200,
+            codigoTransferencia: "",
+            fechaPago: null
+        },
+
+        estado: "recibido",
+        observaciones: "Sin cebollín",
+
+        fechaCreacion: new Date(Date.now() - 12 * 60000).toISOString(),
+        fechaActualizacion: new Date().toISOString(),
+
+        mesaId: null,
+
+        historial: [
+            {
+                tipo: "creacion",
+                fecha: new Date(Date.now() - 12 * 60000).toISOString(),
+                detalle: "Pedido creado"
+            }
+        ]
+    },
+
+    {
+        id: 2,
+        numero: "P-002",
+        tipo: "retiro",
+        origen: "personal",
+
+        cliente: {
+            nombre: "Diego",
+            apellido: "Muñoz",
+            telefono: "987654321",
+            direccion: "",
+            referencia: ""
+        },
+
+        productos: [
+            {
+                id: 5,
+                nombre: "Promo 30 piezas",
+                cantidad: 1,
+                precio: 16990
+            }
+        ],
+
+        subtotal: 16990,
+        propina: 0,
+        total: 16990,
+
+        pago: {
+            metodoPrevisto: "debito",
+            metodoFinal: "",
+            estado: "pendiente",
+            monto: 16990,
+            montoRecibido: 0,
+            vuelto: 0,
+            codigoTransferencia: "",
+            fechaPago: null
+        },
+
+        estado: "preparacion",
+        observaciones: "",
+
+        fechaCreacion: new Date(Date.now() - 21 * 60000).toISOString(),
+        fechaActualizacion: new Date().toISOString(),
+
+        mesaId: null,
+
+        historial: [
+            {
+                tipo: "creacion",
+                fecha: new Date(Date.now() - 21 * 60000).toISOString(),
+                detalle: "Pedido creado"
+            }
+        ]
+    },
+
+    {
+        id: 3,
+        numero: "P-003",
+        tipo: "local",
+        origen: "personal",
+
+        cliente: {
+            nombre: "Mesa 02",
+            apellido: "",
+            telefono: "",
+            direccion: "",
+            referencia: ""
+        },
+
+        productos: [
+            {
+                id: 3,
+                nombre: "Salmón Roll",
+                cantidad: 2,
+                precio: 9900
+            },
+            {
+                id: 2,
+                nombre: "Handroll Pollo",
+                cantidad: 1,
+                precio: 5500
+            }
+        ],
+
+        subtotal: 25300,
+        propina: 0,
+        total: 25300,
+
+        pago: {
+            metodoPrevisto: "",
+            metodoFinal: "",
+            estado: "pendiente",
+            monto: 25300,
+            montoRecibido: 0,
+            vuelto: 0,
+            codigoTransferencia: "",
+            fechaPago: null
+        },
+
+        estado: "confirmado",
+        observaciones: "Agregar bastante salsa",
+
+        fechaCreacion: new Date(Date.now() - 34 * 60000).toISOString(),
+        fechaActualizacion: new Date().toISOString(),
+
+        mesaId: 2,
+
+        historial: [
+            {
+                tipo: "creacion",
+                fecha: new Date(Date.now() - 34 * 60000).toISOString(),
+                detalle: "Pedido creado"
+            }
+        ]
+    }
 ]
+
 };

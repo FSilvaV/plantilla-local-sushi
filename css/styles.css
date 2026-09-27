@@ -3028,6 +3028,268 @@ button {
 
 }
 
+/* =========================
+   PEDIDOS
+========================= */
+
+.pedidos-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pedidos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.pedidos-header h2,
+.pedidos-grupo-header h3 {
+    margin: 0;
+}
+
+.pedidos-header p,
+.pedidos-grupo-header p {
+    margin: 5px 0 0;
+    color: var(--text-soft);
+}
+
+.pedidos-resumen {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pedido-resumen-item {
+    min-width: 90px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.pedido-resumen-item span {
+    display: block;
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.pedido-resumen-item strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 20px;
+}
+
+.pedidos-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.pedidos-grupo {
+    min-width: 0;
+}
+
+.pedidos-grupo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.pedidos-grupo-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-weight: 700;
+}
+
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pedido-card {
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.pedido-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+}
+
+.pedido-card.urgencia-verde::before {
+    background: #22c55e;
+}
+
+.pedido-card.urgencia-amarillo::before {
+    background: #eab308;
+}
+
+.pedido-card.urgencia-rojo::before {
+    background: #ef4444;
+}
+
+.pedido-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.pedido-numero {
+    display: block;
+    font-size: 17px;
+}
+
+.pedido-cliente {
+    display: block;
+    margin-top: 3px;
+    color: var(--text-soft);
+    font-size: 13px;
+}
+
+.pedido-tiempo {
+    text-align: right;
+}
+
+.pedido-tiempo span {
+    display: block;
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.pedido-tiempo strong {
+    font-size: 16px;
+}
+
+.pedido-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px 0;
+    margin-top: 12px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.pedido-producto-linea {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.pedido-observacion {
+    margin-top: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: rgba(234, 179, 8, 0.08);
+    font-size: 12px;
+}
+
+.pedido-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.pedido-info-grid > div {
+    min-width: 0;
+}
+
+.pedido-info-grid span {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--text-soft);
+    font-size: 10px;
+}
+
+.pedido-info-grid strong {
+    font-size: 12px;
+}
+
+.estado-pago.pagado {
+    color: #22c55e;
+}
+
+.estado-pago.pendiente {
+    color: #eab308;
+}
+
+.pedido-status {
+    margin-top: 14px;
+}
+
+.pedido-status > span {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.pedido-status-select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.pedido-card-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.pedido-card-footer button {
+    flex: 1;
+}
+
+.pedidos-vacio {
+    padding: 30px 15px;
+    text-align: center;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    color: var(--text-soft);
+    font-size: 13px;
+}
+
+@media (max-width: 1200px) {
+    .pedidos-board {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .pedidos-header {
+        flex-direction: column;
+    }
+
+    .pedido-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */
