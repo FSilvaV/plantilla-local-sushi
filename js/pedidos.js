@@ -281,6 +281,19 @@ function renderListaPedidosCompletados(pedidos) {
 
                     </div>
 
+                            ${
+                                pedido.pago?.estado !== "pagado"
+                                    ? `
+                                        <button
+                                            class="btn-secondary"
+                                            onclick="gestionarPagoPedido(${pedido.id})"
+                                        >
+                                            Registrar pago
+                                        </button>
+                                    `
+                                    : ""
+                            }
+
                     <button
                         class="btn-secondary"
                         onclick="verDetallePedido(${pedido.id})"
@@ -450,6 +463,21 @@ function renderPedidoCard(pedido) {
                 >
                     Avanzar
                 </button>
+
+                    ${pedido.pago?.estado !== "pagado"
+                        ? `
+                <button
+                    class="btn-secondary"
+                    onclick="gestionarPagoPedido(${pedido.id})"
+                >
+                    Registrar pago
+                </button>
+                ` : `
+                <span class="pedido-pago-confirmado">
+                    ✓ Pagado
+                </span>
+            `
+            }
 
             </div>
 
@@ -652,6 +680,485 @@ function actualizarCronometrosPedidos() {
         });
 }
 
+function gestionarPagoPedido(id) {
+    const pedido = ScartData.pedidos.find(
+        pedido => Number(pedido.id) === Number(id)
+    );
+
+    if (!pedido) {
+        mostrarToast("No se encontró el pedido.");
+        return;
+    }
+
+    cerrarModalPagoPedido();
+
+    const pago = pedido.pago || {};
+
+    const metodoInicial =
+        pago.metodoFinal ||
+        pago.metodoPrevisto ||
+        "";
+
+    const modal = document.createElement("div");
+
+    modal.id = "pago-pedido-modal";
+    modal.className = "pedido-modal-overlay";
+
+    modal.innerHTML = `
+        <div class="pedido-modal pago-modal">
+
+            <div class="pedido-modal-header">
+
+                <div>
+                    <span class="pedido-modal-label">
+                        Gestión de pago
+                    </span>
+
+                    <h2>${pedido.numero}</h2>
+
+                    <p>
+                        Total:
+                        ${formatearDinero(pedido.total)}
+                    </p>
+                </div>
+
+                <button
+                    class="pedido-modal-cerrar"
+                    onclick="cerrarModalPagoPedido()"
+                    aria-label="Cerrar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="pedido-modal-body">
+
+                <div class="pago-resumen">
+
+                    <div>
+                        <span>Método previsto</span>
+
+                        <strong>
+                            ${
+                                pago.metodoPrevisto
+                                    ? formatearMetodoPago({
+                                        metodoPrevisto:
+                                            pago.metodoPrevisto
+                                    })
+                                    : "No definido"
+                            }
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Total a pagar</span>
+
+                        <strong>
+                            ${formatearDinero(pedido.total)}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="pago-form-grupo">
+
+                    <label for="pago-metodo-final">
+                        Método de pago final
+                    </label>
+
+                    <select
+                        id="pago-metodo-final"
+                        onchange="actualizarCamposPagoPedido(${pedido.id})"
+                    >
+                        <option value="">
+                            Seleccionar método
+                        </option>
+
+                        <option
+                            value="efectivo"
+                            ${metodoInicial === "efectivo" ? "selected" : ""}
+                        >
+                            Efectivo
+                        </option>
+
+                        <option
+                            value="debito"
+                            ${metodoInicial === "debito" ? "selected" : ""}
+                        >
+                            Débito
+                        </option>
+
+                        <option
+                            value="credito"
+                            ${metodoInicial === "credito" ? "selected" : ""}
+                        >
+                            Crédito
+                        </option>
+
+                        <option
+                            value="transferencia"
+                            ${metodoInicial === "transferencia" ? "selected" : ""}
+                        >
+                            Transferencia
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="pago-campos-dinamicos"
+                    class="pago-campos-dinamicos"
+                ></div>
+
+
+                <div class="pago-nota">
+                    El método final puede ser distinto al seleccionado
+                    originalmente en el pedido.
+                </div>
+
+            </div>
+
+
+            <div class="pedido-modal-footer">
+
+                <button
+                    class="btn-secondary"
+                    onclick="cerrarModalPagoPedido()"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="btn-primary"
+                    onclick="confirmarPagoPedido(${pedido.id})"
+                >
+                    Confirmar pago
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    modal.addEventListener(
+        "click",
+        event => {
+            if (event.target === modal) {
+                cerrarModalPagoPedido();
+            }
+        }
+    );
+
+    document.body.appendChild(modal);
+
+    actualizarCamposPagoPedido(pedido.id);
+}
+
+
+function actualizarCamposPagoPedido(id) {
+    const pedido = ScartData.pedidos.find(
+        pedido => Number(pedido.id) === Number(id)
+    );
+
+    if (!pedido) return;
+
+    const metodo =
+        document.getElementById(
+            "pago-metodo-final"
+        )?.value || "";
+
+    const contenedor =
+        document.getElementById(
+            "pago-campos-dinamicos"
+        );
+
+    if (!contenedor) return;
+
+
+    if (metodo === "efectivo") {
+
+        contenedor.innerHTML = `
+            <div class="pago-form-grupo">
+
+                <label for="pago-monto-recibido">
+                    Monto recibido
+                </label>
+
+                <input
+                    id="pago-monto-recibido"
+                    type="number"
+                    min="${pedido.total}"
+                    step="1"
+                    placeholder="Ej: 20000"
+                    oninput="calcularVueltoPagoPedido(${pedido.id})"
+                >
+
+            </div>
+
+            <div class="pago-vuelto-box">
+
+                <span>Vuelto</span>
+
+                <strong id="pago-vuelto">
+                    ${formatearDinero(0)}
+                </strong>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if (metodo === "transferencia") {
+
+        contenedor.innerHTML = `
+            <div class="pago-form-grupo">
+
+                <label for="pago-codigo-transferencia">
+                    Código / referencia de transferencia
+                </label>
+
+                <input
+                    id="pago-codigo-transferencia"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Ej: TRX-45821"
+                >
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if (
+        metodo === "debito" ||
+        metodo === "credito"
+    ) {
+
+        contenedor.innerHTML = `
+            <div class="pago-confirmacion-tarjeta">
+
+                <span>
+                    ${
+                        metodo === "debito"
+                            ? "Pago con débito"
+                            : "Pago con crédito"
+                    }
+                </span>
+
+                <strong>
+                    ${formatearDinero(pedido.total)}
+                </strong>
+
+                <small>
+                    Confirma el pago después de aprobar
+                    la transacción en el terminal.
+                </small>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    contenedor.innerHTML = `
+        <div class="pago-sin-metodo">
+            Selecciona el método utilizado por el cliente.
+        </div>
+    `;
+}
+
+
+function calcularVueltoPagoPedido(id) {
+    const pedido = ScartData.pedidos.find(
+        pedido => Number(pedido.id) === Number(id)
+    );
+
+    if (!pedido) return;
+
+    const input =
+        document.getElementById(
+            "pago-monto-recibido"
+        );
+
+    const salida =
+        document.getElementById(
+            "pago-vuelto"
+        );
+
+    if (!input || !salida) return;
+
+    const recibido =
+        Number(input.value) || 0;
+
+    const vuelto =
+        Math.max(
+            0,
+            recibido - Number(pedido.total)
+        );
+
+    salida.textContent =
+        formatearDinero(vuelto);
+}
+
+
+function confirmarPagoPedido(id) {
+    const pedido = ScartData.pedidos.find(
+        pedido => Number(pedido.id) === Number(id)
+    );
+
+    if (!pedido) {
+        mostrarToast("No se encontró el pedido.");
+        return;
+    }
+
+    const metodo =
+        document.getElementById(
+            "pago-metodo-final"
+        )?.value || "";
+
+    if (!metodo) {
+        mostrarToast(
+            "Debes seleccionar un método de pago."
+        );
+        return;
+    }
+
+    let montoRecibido = 0;
+    let vuelto = 0;
+    let codigoTransferencia = "";
+
+
+    // =========================
+    // EFECTIVO
+    // =========================
+
+    if (metodo === "efectivo") {
+
+        const inputMonto =
+            document.getElementById(
+                "pago-monto-recibido"
+            );
+
+        montoRecibido =
+            Number(inputMonto?.value) || 0;
+
+        if (montoRecibido < pedido.total) {
+            mostrarToast(
+                "El monto recibido es menor al total."
+            );
+            return;
+        }
+
+        vuelto =
+            montoRecibido - pedido.total;
+    }
+
+
+    // =========================
+    // TRANSFERENCIA
+    // =========================
+
+    if (metodo === "transferencia") {
+
+        const inputCodigo =
+            document.getElementById(
+                "pago-codigo-transferencia"
+            );
+
+        codigoTransferencia =
+            inputCodigo?.value.trim() || "";
+
+        if (!codigoTransferencia) {
+            mostrarToast(
+                "Debes ingresar el código de transferencia."
+            );
+            return;
+        }
+    }
+
+
+    // =========================
+    // ACTUALIZAR PAGO
+    // =========================
+
+    const ahora =
+        new Date().toISOString();
+
+    if (!pedido.pago) {
+        pedido.pago = {};
+    }
+
+    pedido.pago.metodoFinal =
+        metodo;
+
+    pedido.pago.estado =
+        "pagado";
+
+    pedido.pago.monto =
+        pedido.total;
+
+    pedido.pago.montoRecibido =
+        montoRecibido;
+
+    pedido.pago.vuelto =
+        vuelto;
+
+    pedido.pago.codigoTransferencia =
+        codigoTransferencia;
+
+    pedido.pago.fechaPago =
+        ahora;
+
+    pedido.fechaActualizacion =
+        ahora;
+
+
+    // =========================
+    // HISTORIAL / AUDITORÍA
+    // =========================
+
+    if (!pedido.historial) {
+        pedido.historial = [];
+    }
+
+    pedido.historial.push({
+        tipo: "pago",
+        fecha: ahora,
+        detalle:
+            `Pago confirmado mediante ${metodo}`
+    });
+
+
+    cerrarModalPagoPedido();
+
+    mostrarToast(
+        `Pago de ${pedido.numero} confirmado`
+    );
+
+    refrescarPedidos();
+}
+
+
+function cerrarModalPagoPedido() {
+    const modal =
+        document.getElementById(
+            "pago-pedido-modal"
+        );
+
+    if (modal) {
+        modal.remove();
+    }
+}
 
 function verDetallePedido(id) {
     const pedido = ScartData.pedidos.find(

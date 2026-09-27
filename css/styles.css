@@ -3682,6 +3682,168 @@ button {
     }
 }
 
+/* =========================
+   GESTIÓN DE PAGO
+========================= */
+
+.pago-modal {
+    width: min(520px, 100%);
+}
+
+.pago-resumen {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.pago-resumen > div {
+    padding: 12px;
+
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.pago-resumen span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+.pago-resumen strong {
+    font-size: 14px;
+}
+
+.pago-form-grupo {
+    margin-bottom: 14px;
+}
+
+.pago-form-grupo label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pago-form-grupo select,
+.pago-form-grupo input {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    color: var(--text);
+
+    outline: none;
+}
+
+.pago-form-grupo select:focus,
+.pago-form-grupo input:focus {
+    border-color: var(--primary);
+}
+
+.pago-campos-dinamicos {
+    margin-top: 14px;
+}
+
+.pago-vuelto-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px;
+
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 10px;
+}
+
+.pago-vuelto-box span {
+    color: var(--text-soft);
+}
+
+.pago-vuelto-box strong {
+    font-size: 20px;
+}
+
+.pago-confirmacion-tarjeta {
+    padding: 14px;
+
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.pago-confirmacion-tarjeta span,
+.pago-confirmacion-tarjeta small {
+    display: block;
+}
+
+.pago-confirmacion-tarjeta strong {
+    display: block;
+
+    margin: 5px 0;
+
+    font-size: 20px;
+}
+
+.pago-confirmacion-tarjeta small {
+    color: var(--text-soft);
+}
+
+.pago-sin-metodo {
+    padding: 14px;
+
+    color: var(--text-soft);
+
+    background: var(--background);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+
+    font-size: 12px;
+    text-align: center;
+}
+
+.pago-nota {
+    margin-top: 18px;
+
+    color: var(--text-soft);
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.pedido-pago-confirmado {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 9px;
+
+    color: #22c55e;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+@media (max-width: 600px) {
+
+    .pago-resumen {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */
