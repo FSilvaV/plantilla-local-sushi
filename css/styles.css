@@ -1216,6 +1216,7 @@ button {
 }
 
 .product-body p {
+
     display: -webkit-box;
 
     overflow: hidden;
@@ -1225,9 +1226,12 @@ button {
     color: var(--text-soft);
 
     font-size: 10px;
+
     line-height: 1.4;
 
+    line-clamp: 2;
     -webkit-line-clamp: 2;
+
     -webkit-box-orient: vertical;
 }
 
