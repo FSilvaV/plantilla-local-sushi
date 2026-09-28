@@ -152,15 +152,8 @@ function cargarPagina(page) {
 
 
         case "ventas":
-
-            mostrarPlaceholder(
-                "$",
-                "Ventas",
-                "Aquí aparecerá el registro de ventas y métodos de pago."
-            );
-
+            appContent.innerHTML = renderVentas();
             break;
-
 
         case "inventario":
 

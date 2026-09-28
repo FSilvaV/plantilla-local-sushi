@@ -4952,6 +4952,243 @@ button {
     box-sizing: border-box;
 }
 
+.ventas-page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.ventas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.ventas-header h1 {
+    margin: 4px 0;
+}
+
+.ventas-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.ventas-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #dc2626;
+}
+
+.ventas-resumen {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.ventas-resumen-card {
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ventas-resumen-card span {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.ventas-resumen-card strong {
+    font-size: 20px;
+}
+
+.ventas-resumen-card small {
+    color: #94a3b8;
+}
+
+.ventas-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ventas-tab {
+    border: 0;
+    background: transparent;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+}
+
+.ventas-tab span {
+    margin-left: 5px;
+    font-size: 11px;
+}
+
+.ventas-tab.activo {
+    color: #dc2626;
+    border-bottom-color: #dc2626;
+}
+
+.ventas-filtros {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(140px, 180px))
+        minmax(220px, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.ventas-filtros label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ventas-filtros label span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.ventas-filtros select,
+.ventas-filtros input {
+    padding: 10px 12px;
+    border: 1px solid #dbe1e8;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+}
+
+.ventas-tabla-wrapper {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow-x: auto;
+}
+
+.ventas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ventas-tabla th,
+.ventas-tabla td {
+    text-align: left;
+    padding: 13px 14px;
+    border-bottom: 1px solid #eef2f7;
+    white-space: nowrap;
+}
+
+.ventas-tabla th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #64748b;
+}
+
+.ventas-tabla tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.venta-canal {
+    font-weight: 600;
+}
+
+.ventas-vacio {
+    padding: 45px 20px;
+    text-align: center;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+}
+
+.ventas-vacio strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.ventas-vacio p {
+    margin: 0;
+    color: #64748b;
+}
+
+.venta-detalle-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.venta-detalle-info p,
+.venta-detalle-efectivo p {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+}
+
+.venta-detalle-info span,
+.venta-detalle-efectivo span {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.venta-detalle-productos {
+    margin: 20px 0;
+}
+
+.venta-detalle-producto,
+.venta-detalle-linea {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.venta-detalle-efectivo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.venta-detalle-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid #e5e7eb;
+}
+
+.venta-detalle-total strong {
+    font-size: 22px;
+}
+
+@media (max-width: 1100px) {
+
+    .ventas-resumen {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .ventas-filtros {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */

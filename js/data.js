@@ -352,7 +352,313 @@ pedidos: [
                 detalle: "Pedido creado"
             }
         ]
-    }
+    },
+
+    {
+    id: 4,
+    numero: "P-004",
+    tipo: "delivery",
+    origen: "personal",
+
+    cliente: {
+        nombre: "Valentina",
+        apellido: "Castillo",
+        telefono: "956781234",
+        direccion: "Villa Los Presidentes, Ovalle",
+        referencia: "Portón negro"
+    },
+
+    productos: [
+        {
+            id: 5,
+            nombre: "Promo 30 piezas",
+            cantidad: 1,
+            precio: 16990
+        },
+        {
+            id: 4,
+            nombre: "Bebida 1.5L",
+            cantidad: 1,
+            precio: 3000
+        }
+    ],
+
+    subtotal: 19990,
+    propina: 0,
+    total: 19990,
+
+    pago: {
+        metodoPrevisto: "transferencia",
+        metodoFinal: "transferencia",
+        estado: "pagado",
+        monto: 19990,
+        montoRecibido: 0,
+        vuelto: 0,
+        codigoTransferencia: "TRX-4821",
+        fechaPago: new Date(
+            Date.now() - 35 * 60000
+        ).toISOString()
+    },
+
+    estado: "entregado",
+    observaciones: "",
+
+    fechaCreacion: new Date(
+        Date.now() - 55 * 60000
+    ).toISOString(),
+
+    fechaActualizacion: new Date(
+        Date.now() - 30 * 60000
+    ).toISOString(),
+
+    mesaId: null,
+
+    historial: []
+},
+
+{
+    id: 5,
+    numero: "P-005",
+    tipo: "local",
+    origen: "personal",
+
+    cliente: {
+        nombre: "Mesa 04",
+        apellido: "",
+        telefono: "",
+        direccion: "",
+        referencia: ""
+    },
+
+    productos: [
+        {
+            id: 3,
+            nombre: "Salmón Roll",
+            cantidad: 2,
+            precio: 9900
+        },
+        {
+            id: 4,
+            nombre: "Bebida 1.5L",
+            cantidad: 1,
+            precio: 3000
+        }
+    ],
+
+    subtotal: 22800,
+    propina: 0,
+    total: 22800,
+
+    pago: {
+        metodoPrevisto: "debito",
+        metodoFinal: "debito",
+        estado: "pagado",
+        monto: 22800,
+        montoRecibido: 0,
+        vuelto: 0,
+        codigoTransferencia: "",
+        fechaPago: new Date(
+            Date.now() - 75 * 60000
+        ).toISOString()
+    },
+
+    estado: "entregado",
+    observaciones: "",
+
+    fechaCreacion: new Date(
+        Date.now() - 105 * 60000
+    ).toISOString(),
+
+    fechaActualizacion: new Date(
+        Date.now() - 70 * 60000
+    ).toISOString(),
+
+    mesaId: null,
+
+    historial: []
+},
+
+{
+    id: 6,
+    numero: "P-006",
+    tipo: "retiro",
+    origen: "personal",
+
+    cliente: {
+        nombre: "Francisca",
+        apellido: "Vega",
+        telefono: "934567812",
+        direccion: "",
+        referencia: ""
+    },
+
+    productos: [
+        {
+            id: 2,
+            nombre: "Handroll Pollo",
+            cantidad: 2,
+            precio: 5500
+        }
+    ],
+
+    subtotal: 11000,
+    propina: 0,
+    total: 11000,
+
+    pago: {
+        metodoPrevisto: "efectivo",
+        metodoFinal: "efectivo",
+        estado: "pagado",
+        monto: 11000,
+
+        // Cliente entregó $15.000.
+        // La venta sigue siendo de $11.000.
+        montoRecibido: 15000,
+        vuelto: 4000,
+
+        codigoTransferencia: "",
+
+        fechaPago: new Date(
+            Date.now() - 125 * 60000
+        ).toISOString()
+    },
+
+    estado: "entregado",
+    observaciones: "",
+
+    fechaCreacion: new Date(
+        Date.now() - 145 * 60000
+    ).toISOString(),
+
+    fechaActualizacion: new Date(
+        Date.now() - 120 * 60000
+    ).toISOString(),
+
+    mesaId: null,
+
+    historial: []
+},
+
+{
+    id: 7,
+    numero: "P-007",
+    tipo: "delivery",
+    origen: "personal",
+
+    cliente: {
+        nombre: "Matías",
+        apellido: "Araya",
+        telefono: "923456781",
+        direccion: "Sector El Portal, Ovalle",
+        referencia: ""
+    },
+
+    productos: [
+        {
+            id: 1,
+            nombre: "California Roll",
+            cantidad: 1,
+            precio: 8900
+        },
+        {
+            id: 2,
+            nombre: "Handroll Pollo",
+            cantidad: 1,
+            precio: 5500
+        }
+    ],
+
+    subtotal: 14400,
+    propina: 0,
+    total: 14400,
+
+    pago: {
+        metodoPrevisto: "credito",
+        metodoFinal: "credito",
+        estado: "pagado",
+        monto: 14400,
+        montoRecibido: 0,
+        vuelto: 0,
+        codigoTransferencia: "",
+
+        fechaPago: new Date(
+            Date.now() - 185 * 60000
+        ).toISOString()
+    },
+
+    estado: "entregado",
+    observaciones: "",
+
+    fechaCreacion: new Date(
+        Date.now() - 210 * 60000
+    ).toISOString(),
+
+    fechaActualizacion: new Date(
+        Date.now() - 180 * 60000
+    ).toISOString(),
+
+    mesaId: null,
+
+    historial: []
+},
+
+{
+    id: 8,
+    numero: "P-008",
+    tipo: "local",
+    origen: "personal",
+
+    cliente: {
+        nombre: "Mesa 06",
+        apellido: "",
+        telefono: "",
+        direccion: "",
+        referencia: ""
+    },
+
+    productos: [
+        {
+            id: 5,
+            nombre: "Promo 30 piezas",
+            cantidad: 2,
+            precio: 16990
+        }
+    ],
+
+    subtotal: 33980,
+    propina: 0,
+    total: 33980,
+
+    pago: {
+        metodoPrevisto: "transferencia",
+        metodoFinal: "transferencia",
+        estado: "pagado",
+        monto: 33980,
+        montoRecibido: 0,
+        vuelto: 0,
+        codigoTransferencia: "TRX-7164",
+
+        fechaPago: new Date(
+            Date.now() - 240 * 60000
+        ).toISOString()
+    },
+
+    estado: "entregado",
+    observaciones: "",
+
+    fechaCreacion: new Date(
+        Date.now() - 270 * 60000
+    ).toISOString(),
+
+    fechaActualizacion: new Date(
+        Date.now() - 235 * 60000
+    ).toISOString(),
+
+    mesaId: null,
+
+    historial: []
+},
+
 ]
 
 };
