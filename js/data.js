@@ -168,6 +168,14 @@ const ScartData = {
 
 ],
 
+inventario: [
+    // aquí van Arroz para sushi, Alga Nori,
+    // Salmón, Camarón, Pollo, Queso crema,
+    // Palta, etc.
+],
+
+movimientosInventario: [],
+
 pedidos: [
     {
         id: 1,

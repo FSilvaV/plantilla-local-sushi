@@ -164,14 +164,9 @@ function cargarPagina(page) {
 
         case "inventario":
 
-            mostrarPlaceholder(
-                "▧",
-                "Inventario",
-                "Aquí administraremos ingredientes, insumos, movimientos y mermas."
-            );
+            appContent.innerHTML = renderInventario();
 
             break;
-
 
         case "menu":
 
