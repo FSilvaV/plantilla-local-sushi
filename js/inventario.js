@@ -17,11 +17,16 @@ function renderInventario() {
     const total = inventario.length;
 
     const stockBajo = inventario.filter(
-        item => item.stock > 0 && item.stock <= item.stockMinimo
+        item =>
+            item.activo !== false &&
+            item.stock > 0 &&
+            item.stock <= item.stockMinimo
     ).length;
 
     const sinStock = inventario.filter(
-        item => item.stock <= 0
+        item =>
+            item.activo !== false &&
+            item.stock <= 0
     ).length;
 
     const categorias = [
@@ -203,7 +208,7 @@ function renderInventarioFila(item) {
     const estado = obtenerEstadoInventario(item);
 
     return `
-        <tr>
+        <tr class="${!item.activo ? "inventario-inactivo" : ""}">
 
             <td>
                 <div class="inventario-producto">
@@ -219,6 +224,7 @@ function renderInventarioFila(item) {
 
                         <span>
                             ID ${String(item.id).padStart(3, "0")}
+                            ${!item.activo ? " · Inactivo" : ""}
                         </span>
                     </div>
 
@@ -242,20 +248,37 @@ function renderInventarioFila(item) {
             </td>
 
             <td>
-                <span
-                    class="inventario-estado ${estado.clase}"
-                >
+                <span class="inventario-estado ${estado.clase}">
                     ${estado.texto}
                 </span>
             </td>
 
             <td>
-                <button
-                    class="btn-secondary inventario-btn-movimiento"
-                    onclick="abrirMovimientoInventario(${item.id})"
-                >
-                    Movimiento
-                </button>
+                <div class="inventario-acciones">
+
+                    <button
+                        class="btn-secondary"
+                        onclick="abrirEditarInsumo(${item.id})"
+                    >
+                        Editar
+                    </button>
+
+                    <button
+                        class="btn-secondary"
+                        onclick="abrirMovimientoInventario(${item.id})"
+                        ${!item.activo ? "disabled" : ""}
+                    >
+                        Movimiento
+                    </button>
+
+                    <button
+                        class="btn-secondary"
+                        onclick="cambiarEstadoInsumo(${item.id})"
+                    >
+                        ${item.activo ? "Desactivar" : "Activar"}
+                    </button>
+
+                </div>
             </td>
 
         </tr>
@@ -268,6 +291,14 @@ function renderInventarioFila(item) {
 ========================================================= */
 
 function obtenerEstadoInventario(item) {
+
+    if (!item.activo) {
+        return {
+            texto: "Inactivo",
+            clase: "inactivo"
+        };
+    }
+
     if (item.stock <= 0) {
         return {
             texto: "Sin stock",
@@ -508,20 +539,6 @@ function abrirNuevoInsumo() {
                         </select>
                     </label>
 
-
-                    <label>
-                        <span>Stock inicial</span>
-
-                        <input
-                            id="nuevo-insumo-stock"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value="0"
-                        >
-                    </label>
-
-
                     <label>
                         <span>Stock mínimo</span>
 
@@ -625,12 +642,6 @@ function guardarNuevoInsumo() {
         .getElementById("nuevo-insumo-unidad")
         .value;
 
-    const stock = Number(
-        document.getElementById(
-            "nuevo-insumo-stock"
-        ).value
-    );
-
     const stockMinimo = Number(
         document.getElementById(
             "nuevo-insumo-minimo"
@@ -667,7 +678,7 @@ function guardarNuevoInsumo() {
     }
 
 
-    if (stock < 0 || stockMinimo < 0) {
+    if (stockMinimo < 0) {
         mostrarToast(
             "El stock no puede ser negativo."
         );
@@ -716,7 +727,7 @@ function guardarNuevoInsumo() {
         nombre: nombre,
         categoria: categoria,
         unidad: unidad,
-        stock: Number(stock.toFixed(2)),
+        stock: 0,
         stockMinimo: Number(
             stockMinimo.toFixed(2)
         ),
@@ -728,39 +739,6 @@ function guardarNuevoInsumo() {
         nuevoInsumo
     );
 
-
-    /* REGISTRAR STOCK INICIAL */
-
-    if (stock > 0) {
-        if (!ScartData.movimientosInventario) {
-            ScartData.movimientosInventario = [];
-        }
-
-
-        ScartData.movimientosInventario.unshift({
-            id: Date.now(),
-
-            itemId: nuevoInsumo.id,
-
-            itemNombre: nuevoInsumo.nombre,
-
-            tipo: "entrada",
-
-            cantidad: nuevoInsumo.stock,
-
-            unidad: nuevoInsumo.unidad,
-
-            stockAnterior: 0,
-
-            stockNuevo: nuevoInsumo.stock,
-
-            motivo: "Stock inicial",
-
-            fecha: new Date().toISOString()
-        });
-    }
-
-
     cerrarNuevoInsumo();
 
     mostrarToast(
@@ -768,8 +746,356 @@ function guardarNuevoInsumo() {
     );
 
     refrescarInventario();
+    }
+
+    /* =========================================================
+   EDITAR INSUMO
+========================================================= */
+
+function abrirEditarInsumo(itemId) {
+
+    cerrarEditarInsumo();
+
+    const item = ScartData.inventario.find(
+        item => Number(item.id) === Number(itemId)
+    );
+
+    if (!item) {
+        mostrarToast("No se encontró el insumo.");
+        return;
+    }
+
+    const modal = document.createElement("div");
+
+    modal.id = "inventario-editar-insumo-modal";
+    modal.className = "pedido-modal-overlay";
+
+    modal.innerHTML = `
+        <div class="pedido-modal inventario-modal">
+
+            <div class="pedido-modal-header">
+
+                <div>
+                    <span class="pedido-modal-label">
+                        Inventario
+                    </span>
+
+                    <h2>Editar insumo</h2>
+
+                    <p>
+                        Modifica los datos generales del insumo.
+                        El stock se administra mediante movimientos.
+                    </p>
+                </div>
+
+                <button
+                    class="pedido-modal-cerrar"
+                    onclick="cerrarEditarInsumo()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div class="pedido-modal-body">
+
+                <div class="inventario-form-grid">
+
+                    <label>
+                        <span>Nombre</span>
+
+                        <input
+                            id="editar-insumo-nombre"
+                            type="text"
+                            value="${item.nombre}"
+                        >
+                    </label>
+
+                    <label>
+                        <span>Categoría</span>
+
+                        <select id="editar-insumo-categoria">
+
+                            ${crearOpcionesCategoriaInventario(
+                                item.categoria
+                            )}
+
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Unidad de medida</span>
+
+                        <select id="editar-insumo-unidad">
+
+                            ${crearOpcionesUnidadInventario(
+                                item.unidad
+                            )}
+
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Stock mínimo</span>
+
+                        <input
+                            id="editar-insumo-minimo"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value="${item.stockMinimo}"
+                        >
+                    </label>
+
+                </div>
+
+                <div class="inventario-ayuda">
+
+                    <strong>
+                        Stock actual
+                    </strong>
+
+                    <p>
+                        ${formatearCantidadInventario(item.stock)}
+                        ${item.unidad}
+                    </p>
+
+                    <p>
+                        Para corregir o modificar esta cantidad,
+                        utiliza Registrar movimiento.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="pedido-modal-footer">
+
+                <button
+                    class="btn-secondary"
+                    onclick="cerrarEditarInsumo()"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    class="btn-primary"
+                    onclick="guardarEdicionInsumo(${item.id})"
+                >
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    modal.addEventListener(
+        "click",
+        event => {
+            if (event.target === modal) {
+                cerrarEditarInsumo();
+            }
+        }
+    );
+
+    document.body.appendChild(modal);
 }
 
+
+function guardarEdicionInsumo(itemId) {
+
+    const item = ScartData.inventario.find(
+        item => Number(item.id) === Number(itemId)
+    );
+
+    if (!item) {
+        mostrarToast("No se encontró el insumo.");
+        return;
+    }
+
+    const nombre = document
+        .getElementById("editar-insumo-nombre")
+        .value
+        .trim();
+
+    const categoria = document
+        .getElementById("editar-insumo-categoria")
+        .value;
+
+    const unidad = document
+        .getElementById("editar-insumo-unidad")
+        .value;
+
+    const stockMinimo = Number(
+        document.getElementById(
+            "editar-insumo-minimo"
+        ).value
+    );
+
+    if (!nombre) {
+        mostrarToast("Ingresa el nombre del insumo.");
+        return;
+    }
+
+    if (!categoria) {
+        mostrarToast("Selecciona una categoría.");
+        return;
+    }
+
+    if (!unidad) {
+        mostrarToast("Selecciona una unidad.");
+        return;
+    }
+
+    if (stockMinimo < 0) {
+        mostrarToast(
+            "El stock mínimo no puede ser negativo."
+        );
+        return;
+    }
+
+    const duplicado = ScartData.inventario.some(
+        otro =>
+            Number(otro.id) !== Number(itemId) &&
+            otro.nombre.trim().toLowerCase() ===
+                nombre.toLowerCase()
+    );
+
+    if (duplicado) {
+        mostrarToast(
+            "Ya existe otro insumo con ese nombre."
+        );
+        return;
+    }
+
+    item.nombre = nombre;
+    item.categoria = categoria;
+    item.unidad = unidad;
+    item.stockMinimo = Number(
+        stockMinimo.toFixed(2)
+    );
+
+    cerrarEditarInsumo();
+
+    mostrarToast(
+        `${item.nombre} actualizado`
+    );
+
+    refrescarInventario();
+}
+
+
+function cerrarEditarInsumo() {
+
+    const modal = document.getElementById(
+        "inventario-editar-insumo-modal"
+    );
+
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function crearOpcionesCategoriaInventario(
+    seleccionada = ""
+) {
+
+    const categorias = [
+        "Base",
+        "Proteínas",
+        "Refrigerados",
+        "Vegetales",
+        "Apanados",
+        "Condimentos",
+        "Salsas",
+        "Cocina",
+        "Packaging",
+        "Desechables",
+        "Limpieza",
+        "Otros"
+    ];
+
+    return categorias
+        .map(categoria => `
+            <option
+                value="${categoria}"
+                ${
+                    categoria === seleccionada
+                        ? "selected"
+                        : ""
+                }
+            >
+                ${categoria}
+            </option>
+        `)
+        .join("");
+}
+
+
+function crearOpcionesUnidadInventario(
+    seleccionada = ""
+) {
+
+    const unidades = [
+        ["kg", "Kilogramos (kg)"],
+        ["g", "Gramos (g)"],
+        ["litros", "Litros"],
+        ["ml", "Mililitros (ml)"],
+        ["unidades", "Unidades"],
+        ["hojas", "Hojas"],
+        ["paquetes", "Paquetes"]
+    ];
+
+    return unidades
+        .map(([valor, nombre]) => `
+            <option
+                value="${valor}"
+                ${
+                    valor === seleccionada
+                        ? "selected"
+                        : ""
+                }
+            >
+                ${nombre}
+            </option>
+        `)
+        .join("");
+}
+
+function cambiarEstadoInsumo(itemId) {
+
+    const item = ScartData.inventario.find(
+        item => Number(item.id) === Number(itemId)
+    );
+
+    if (!item) {
+        mostrarToast("No se encontró el insumo.");
+        return;
+    }
+
+    const accion = item.activo
+        ? "desactivar"
+        : "activar";
+
+    const confirmar = window.confirm(
+        `¿Deseas ${accion} "${item.nombre}"?`
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    item.activo = !item.activo;
+
+    mostrarToast(
+        item.activo
+            ? `${item.nombre} activado`
+            : `${item.nombre} desactivado`
+    );
+
+    refrescarInventario();
+}
 
 /* =========================================================
    CERRAR NUEVO INSUMO
@@ -793,6 +1119,7 @@ function abrirMovimientoInventario(itemId = "") {
     cerrarMovimientoInventario();
 
     const opciones = (ScartData.inventario || [])
+        .filter(item => item.activo !== false)
         .map(item => `
             <option
                 value="${item.id}"
@@ -828,7 +1155,8 @@ function abrirMovimientoInventario(itemId = "") {
                     </h2>
 
                     <p>
-                        Entrada, salida, ajuste o merma.
+                        Registra entradas, salidas, mermas
+                        o ajustes de inventario.
                     </p>
                 </div>
 
@@ -866,7 +1194,10 @@ function abrirMovimientoInventario(itemId = "") {
                     <label>
                         <span>Tipo de movimiento</span>
 
-                        <select id="inventario-movimiento-tipo">
+                        <select
+                            id="inventario-movimiento-tipo"
+                            onchange="actualizarMotivosMovimiento()"
+                        >
 
                             <option value="entrada">
                                 Entrada
@@ -912,16 +1243,26 @@ function abrirMovimientoInventario(itemId = "") {
 
 
                     <label>
-                        <span>Motivo / referencia</span>
+                        <span>Motivo</span>
 
-                        <input
+                        <select
                             id="inventario-movimiento-motivo"
-                            type="text"
-                            placeholder="Ej: Compra proveedor"
                         >
+                        </select>
                     </label>
 
                 </div>
+
+
+                <label class="inventario-observacion">
+                    <span>Observación</span>
+
+                    <textarea
+                        id="inventario-movimiento-observacion"
+                        rows="3"
+                        placeholder="Información adicional opcional..."
+                    ></textarea>
+                </label>
 
 
                 <div class="inventario-ayuda">
@@ -932,23 +1273,23 @@ function abrirMovimientoInventario(itemId = "") {
 
                     <p>
                         <b>Entrada:</b>
-                        aumenta el stock por compras o recepción.
+                        aumenta las existencias disponibles.
                     </p>
 
                     <p>
                         <b>Salida:</b>
-                        registra consumo o retiro manual.
+                        registra un retiro o consumo manual.
                     </p>
 
                     <p>
                         <b>Merma:</b>
-                        registra producto perdido, vencido
-                        o no utilizable.
+                        registra existencias perdidas,
+                        vencidas o no utilizables.
                     </p>
 
                     <p>
                         <b>Ajuste:</b>
-                        establece el stock real encontrado
+                        establece la cantidad real encontrada
                         durante un conteo físico.
                     </p>
 
@@ -990,8 +1331,69 @@ function abrirMovimientoInventario(itemId = "") {
     document.body.appendChild(modal);
 
     actualizarUnidadMovimiento();
+    actualizarMotivosMovimiento();
 }
 
+function actualizarMotivosMovimiento() {
+
+    const tipoSelect = document.getElementById(
+        "inventario-movimiento-tipo"
+    );
+
+    const motivoSelect = document.getElementById(
+        "inventario-movimiento-motivo"
+    );
+
+    if (!tipoSelect || !motivoSelect) {
+        return;
+    }
+
+    const motivos = {
+
+        entrada: [
+            "Compra proveedor",
+            "Devolución",
+            "Reposición",
+            "Corrección",
+            "Otro"
+        ],
+
+        salida: [
+            "Consumo interno",
+            "Retiro manual",
+            "Devolución a proveedor",
+            "Traslado",
+            "Otro"
+        ],
+
+        merma: [
+            "Producto vencido",
+            "Producto dañado",
+            "Error de preparación",
+            "Derrame",
+            "Mala conservación",
+            "Otro"
+        ],
+
+        ajuste: [
+            "Conteo físico",
+            "Corrección de inventario",
+            "Diferencia encontrada",
+            "Otro"
+        ]
+    };
+
+    const opciones =
+        motivos[tipoSelect.value] || [];
+
+    motivoSelect.innerHTML = opciones
+        .map(motivo => `
+            <option value="${motivo}">
+                ${motivo}
+            </option>
+        `)
+        .join("");
+}
 
 /* =========================================================
    ACTUALIZAR UNIDAD DEL INSUMO
@@ -1027,6 +1429,7 @@ function actualizarUnidadMovimiento() {
 ========================================================= */
 
 function guardarMovimientoInventario() {
+
     const itemId = Number(
         document.getElementById(
             "inventario-movimiento-item"
@@ -1045,12 +1448,20 @@ function guardarMovimientoInventario() {
 
     const motivo = document.getElementById(
         "inventario-movimiento-motivo"
+    ).value;
+
+    const observacion = document.getElementById(
+        "inventario-movimiento-observacion"
     ).value.trim();
+
 
     const item = ScartData.inventario.find(
         item =>
             Number(item.id) === itemId
     );
+
+
+    /* VALIDAR INSUMO */
 
     if (!item) {
         mostrarToast(
@@ -1060,6 +1471,20 @@ function guardarMovimientoInventario() {
         return;
     }
 
+
+    /* VALIDAR ESTADO */
+
+    if (item.activo === false) {
+        mostrarToast(
+            "El insumo está desactivado."
+        );
+
+        return;
+    }
+
+
+    /* VALIDAR CANTIDAD */
+
     if (!cantidad || cantidad <= 0) {
         mostrarToast(
             "Ingresa una cantidad válida."
@@ -1068,28 +1493,49 @@ function guardarMovimientoInventario() {
         return;
     }
 
-    const stockAnterior = Number(item.stock);
 
-    let stockNuevo = stockAnterior;
+    const stockAnterior =
+        Number(item.stock);
+
+    let stockNuevo =
+        stockAnterior;
 
 
     /* ENTRADA */
 
     if (tipo === "entrada") {
+
         stockNuevo =
             stockAnterior + cantidad;
     }
 
 
-    /* SALIDA / MERMA */
+    /* SALIDA */
 
-    if (
-        tipo === "salida" ||
-        tipo === "merma"
-    ) {
+    if (tipo === "salida") {
+
         if (cantidad > stockAnterior) {
+
             mostrarToast(
                 "La cantidad supera el stock disponible."
+            );
+
+            return;
+        }
+
+        stockNuevo =
+            stockAnterior - cantidad;
+    }
+
+
+    /* MERMA */
+
+    if (tipo === "merma") {
+
+        if (cantidad > stockAnterior) {
+
+            mostrarToast(
+                "La merma supera el stock disponible."
             );
 
             return;
@@ -1103,7 +1549,9 @@ function guardarMovimientoInventario() {
     /* AJUSTE */
 
     if (tipo === "ajuste") {
-        stockNuevo = cantidad;
+
+        stockNuevo =
+            cantidad;
     }
 
 
@@ -1114,16 +1562,17 @@ function guardarMovimientoInventario() {
     );
 
 
-    /* CREAR ARRAY SI NO EXISTE */
+    /* CREAR HISTORIAL SI NO EXISTE */
 
     if (!ScartData.movimientosInventario) {
         ScartData.movimientosInventario = [];
     }
 
 
-    /* REGISTRAR HISTORIAL */
+    /* REGISTRAR MOVIMIENTO */
 
     ScartData.movimientosInventario.unshift({
+
         id: Date.now(),
 
         itemId: item.id,
@@ -1136,13 +1585,17 @@ function guardarMovimientoInventario() {
 
         unidad: item.unidad,
 
-        stockAnterior: stockAnterior,
+        stockAnterior:
+            stockAnterior,
 
-        stockNuevo: item.stock,
+        stockNuevo:
+            item.stock,
 
         motivo:
-            motivo ||
-            "Sin observación",
+            motivo || "Sin motivo",
+
+        observacion:
+            observacion || "",
 
         fecha:
             new Date().toISOString()

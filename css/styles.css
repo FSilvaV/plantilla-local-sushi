@@ -4900,5 +4900,58 @@ button {
 }
 
 /* =========================================================
+   INVENTARIO - ADMINISTRACIÓN DE INSUMOS
+========================================================= */
+
+.inventario-acciones {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.inventario-acciones button {
+    padding: 6px 9px;
+    font-size: 10px;
+}
+
+.inventario-inactivo {
+    opacity: 0.6;
+}
+
+.inventario-estado.inactivo {
+    color: #64748b;
+    background: rgba(100, 116, 139, 0.12);
+}
+
+.inventario-acciones button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.inventario-observacion {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 16px;
+}
+
+.inventario-observacion span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.inventario-observacion textarea {
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d8dde6;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+/* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */
