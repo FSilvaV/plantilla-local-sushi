@@ -3845,5 +3845,642 @@ button {
 }
 
 /* =========================================================
+   MESAS
+========================================================= */
+
+.mesas-page {
+    width: 100%;
+}
+
+
+/* HEADER */
+
+.mesas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.mesas-header h2 {
+    margin: 0;
+
+    font-size: 26px;
+}
+
+.mesas-header p {
+    margin: 5px 0 0;
+
+    color: var(--text-soft);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.mesas-resumen {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+.mesa-resumen-card {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+
+.mesa-resumen-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+.mesa-resumen-icon.disponible {
+    color: #16a34a;
+    background: rgba(34, 197, 94, 0.12);
+}
+
+
+.mesa-resumen-icon.ocupada {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+
+.mesa-resumen-icon.total {
+    color: var(--text);
+    background: var(--background);
+}
+
+
+.mesa-resumen-card strong {
+    display: block;
+
+    font-size: 22px;
+}
+
+
+.mesa-resumen-card span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--text-soft);
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.mesas-toolbar {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 16px;
+}
+
+
+.mesas-filtros {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+}
+
+
+.mesa-filtro {
+    padding: 8px 13px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    color: var(--text-soft);
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+
+.mesa-filtro:hover {
+    color: var(--text);
+}
+
+
+.mesa-filtro.active {
+    background: var(--primary);
+    border-color: var(--primary);
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.mesas-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+}
+
+
+.mesas-layout.con-detalle {
+    grid-template-columns:
+        minmax(0, 1fr)
+        330px;
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.mesas-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(210px, 1fr)
+        );
+
+    gap: 14px;
+
+    align-content: start;
+}
+
+
+.mesas-vacio {
+    padding: 30px;
+
+    color: var(--text-soft);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.mesa-card {
+    min-height: 190px;
+
+    padding: 16px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.mesa-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 22px
+        rgba(0, 0, 0, 0.08);
+}
+
+
+.mesa-card.seleccionada {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(239, 68, 68, 0.08);
+}
+
+
+.mesa-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 10px;
+}
+
+
+.mesa-numero-label {
+    display: block;
+
+    color: var(--text-soft);
+
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+}
+
+
+.mesa-card h3 {
+    margin: 2px 0 0;
+
+    font-size: 22px;
+}
+
+
+/* ESTADO */
+
+.mesa-estado {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+.mesa-estado.disponible {
+    color: #16a34a;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+
+.mesa-estado.ocupada {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+
+.mesa-estado-dot {
+    width: 7px;
+    height: 7px;
+
+    display: inline-block;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+/* VISUAL */
+
+.mesa-card-visual {
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 10px 0;
+
+    background: var(--background);
+    border-radius: 10px;
+}
+
+
+.mesa-icono-grande {
+    color: var(--text-soft);
+
+    font-size: 30px;
+}
+
+
+/* INFO */
+
+.mesa-card-info {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+
+.mesa-card-info > div {
+    min-width: 0;
+}
+
+
+.mesa-card-info span {
+    display: block;
+
+    color: var(--text-soft);
+
+    font-size: 10px;
+}
+
+
+.mesa-card-info strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PANEL DETALLE
+========================================================= */
+
+.mesa-detalle {
+    position: sticky;
+    top: 20px;
+
+    align-self: start;
+
+    padding: 17px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.06);
+}
+
+
+.mesa-detalle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+
+.mesa-detalle-header h2 {
+    margin: 2px 0 0;
+
+    font-size: 25px;
+}
+
+
+.mesa-detalle-cerrar {
+    width: 30px;
+    height: 30px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: var(--background);
+    color: var(--text);
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+.mesa-detalle-estado {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 8px;
+    padding: 6px 9px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.mesa-detalle-estado.ocupada {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+
+.mesa-detalle-estado.disponible {
+    color: #16a34a;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+
+/* =========================================================
+   PLACEHOLDER IMAGEN
+========================================================= */
+
+.mesa-imagen-placeholder {
+    min-height: 160px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    margin-top: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--background),
+            var(--surface)
+        );
+
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+
+    color: var(--text-soft);
+}
+
+
+.mesa-placeholder-icon {
+    margin-bottom: 4px;
+
+    font-size: 34px;
+}
+
+
+.mesa-imagen-placeholder strong {
+    color: var(--text);
+
+    font-size: 12px;
+}
+
+
+.mesa-imagen-placeholder span {
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CUADRO INFORMACIÓN
+========================================================= */
+
+.mesa-detalle-box {
+    margin-top: 12px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+}
+
+
+.mesa-detalle-box h3 {
+    margin: 0;
+    padding: 11px 12px;
+
+    background: var(--background);
+
+    font-size: 12px;
+}
+
+
+.mesa-info-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 9px 12px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.mesa-info-fila span {
+    color: var(--text-soft);
+
+    font-size: 11px;
+}
+
+
+.mesa-info-fila strong {
+    font-size: 11px;
+    text-align: right;
+}
+
+
+.texto-disponible {
+    color: #16a34a;
+}
+
+
+.texto-ocupada {
+    color: #ef4444;
+}
+
+
+.mesa-info-mensaje {
+    padding: 15px 12px;
+
+    color: var(--text-soft);
+
+    border-top: 1px solid var(--border);
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.mesa-detalle-acciones {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 14px;
+}
+
+
+.mesa-detalle-acciones button {
+    width: 100%;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .mesas-layout.con-detalle {
+        grid-template-columns: 1fr;
+    }
+
+
+    .mesa-detalle {
+        position: static;
+    }
+
+}
+
+
+@media (max-width: 750px) {
+
+    .mesas-resumen {
+        grid-template-columns: 1fr;
+    }
+
+
+    .mesas-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .mesa-detalle-acciones {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */

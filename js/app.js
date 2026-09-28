@@ -147,13 +147,7 @@ function cargarPagina(page) {
 
 
         case "mesas":
-
-            mostrarPlaceholder(
-                "▣",
-                "Mesas",
-                "Aquí veremos mesas disponibles, ocupadas y sus tiempos."
-            );
-
+            appContent.innerHTML = renderMesas();
             break;
 
 

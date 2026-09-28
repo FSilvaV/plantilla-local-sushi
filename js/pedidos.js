@@ -421,7 +421,12 @@ function renderPedidoCard(pedido) {
                 <div>
                     <span>Pago</span>
                     <strong>
-                        ${formatearMetodoPago(pedido.pago)}
+                    ${formatearMetodoPago(
+                        pedido.pago?.metodoFinal ||
+                        pedido.pago?.metodoPrevisto ||
+                        pedido.pago?.metodo ||
+                        ""
+                        )}
                     </strong>
                 </div>
 
@@ -531,20 +536,35 @@ function obtenerUrgenciaPedido(minutos) {
 }
 
 
-function formatearMetodoPago(pago) {
-    const metodo =
-        pago.metodoFinal ||
-        pago.metodoPrevisto ||
-        "Pendiente";
+function formatearMetodoPago(metodo) {
+    const metodos = {
+        efectivo: "Efectivo",
+        debito: "Débito",
+        credito: "Crédito",
+        transferencia: "Transferencia",
+        fiado: "Fiado"
+    };
+
+    if (!metodo) {
+        return "Sin definir";
+    }
+
+    return metodos[metodo] || metodo;
+}
+
+
+function obtenerNombreMetodoPago(metodo) {
 
     const nombres = {
         efectivo: "Efectivo",
-        transferencia: "Transferencia",
         debito: "Débito",
-        credito: "Crédito"
+        credito: "Crédito",
+        transferencia: "Transferencia",
+        fiado: "Fiado"
     };
 
-    return nombres[metodo] || "Pendiente";
+
+    return nombres[metodo] || metodo;
 }
 
 
@@ -1275,6 +1295,39 @@ function verDetallePedido(id) {
         })
         .join("");
 
+    const pago = pedido.pago || {};
+
+    let detallePagoExtra = "";
+
+    if (pago.estado === "pagado") {
+
+        if (pago.metodoFinal === "efectivo") {
+
+            detallePagoExtra = `
+                <small>
+                    Recibido:
+                    ${formatearDinero(pago.montoRecibido || pedido.total)}
+                    ·
+                    Vuelto:
+                    ${formatearDinero(pago.vuelto || 0)}
+                </small>
+            `;
+
+        } else if (
+            pago.metodoFinal === "transferencia" &&
+            pago.codigoTransferencia
+        ) {
+
+            detallePagoExtra = `
+                <small>
+                    Código:
+                    ${pago.codigoTransferencia}
+                </small>
+            `;
+
+        }
+    }
+
     const modal = document.createElement("div");
 
     modal.id = "pedido-detalle-modal";
@@ -1344,7 +1397,12 @@ function verDetallePedido(id) {
                         <span>Forma de pago</span>
 
                         <strong>
-                            ${formatearMetodoPago(pedido.pago)}
+                            ${formatearMetodoPago(
+                                pedido.pago?.metodoFinal ||
+                                pedido.pago?.metodoPrevisto ||
+                                pedido.pago?.metodo ||
+                                ""
+                            )}
                         </strong>
 
                         <small>
@@ -1354,7 +1412,9 @@ function verDetallePedido(id) {
                                     : "Pago pendiente"
                             }
                         </small>
-                    </div>
+
+                        ${detallePagoExtra}
+                        </div>
 
                 </div>
 
