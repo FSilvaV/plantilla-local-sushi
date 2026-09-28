@@ -5189,6 +5189,243 @@ button {
     }
 }
 
+.caja-page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.caja-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.caja-header h1 {
+    margin: 4px 0;
+}
+
+.caja-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.caja-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #dc2626;
+}
+
+.caja-estado-vacio {
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 35px;
+}
+
+.caja-estado-vacio h2 {
+    margin: 14px 0 6px;
+}
+
+.caja-estado-vacio p {
+    max-width: 440px;
+    margin: 0 0 20px;
+    color: #64748b;
+}
+
+.caja-estado-icono {
+    width: 55px;
+    height: 55px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.caja-estado-abierta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    background: #ecfdf5;
+    border-radius: 999px;
+    color: #047857;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.caja-estado-abierta span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.caja-resumen {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.caja-resumen-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.caja-resumen-card span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.caja-resumen-card strong {
+    font-size: 22px;
+}
+
+.caja-resumen-card small {
+    color: #94a3b8;
+}
+
+.caja-resumen-card.destacado {
+    border-color: #fecaca;
+}
+
+.caja-panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.caja-panel-header {
+    padding: 18px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.caja-panel-header h2 {
+    margin: 0 0 4px;
+    font-size: 17px;
+}
+
+.caja-panel-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.caja-movimiento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.caja-movimiento:last-child {
+    border-bottom: 0;
+}
+
+.caja-movimiento div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.caja-movimiento span {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.caja-apertura-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.caja-apertura-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.caja-apertura-info span {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.caja-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 16px;
+}
+
+.caja-campo > span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.caja-campo small {
+    color: #64748b;
+}
+
+.caja-campo textarea {
+    padding: 10px 12px;
+    border: 1px solid #d8dde6;
+    border-radius: 8px;
+    resize: vertical;
+    font: inherit;
+}
+
+.caja-input-dinero {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d8dde6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.caja-input-dinero > span {
+    padding: 0 12px;
+    font-weight: 700;
+}
+
+.caja-input-dinero input {
+    flex: 1;
+    padding: 11px 10px;
+    border: 0;
+    outline: none;
+    font: inherit;
+}
+
+@media (max-width: 1000px) {
+
+    .caja-resumen {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */

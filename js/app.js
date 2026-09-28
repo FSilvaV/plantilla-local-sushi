@@ -60,6 +60,12 @@ const pages = {
             "Registro y estadísticas de ventas"
     },
 
+    caja: {
+        title: "Caja",
+        description:
+            "Apertura, movimientos y cierre de caja"
+    },
+
     inventario: {
         title: "Inventario",
         description:
@@ -153,6 +159,10 @@ function cargarPagina(page) {
 
         case "ventas":
             appContent.innerHTML = renderVentas();
+            break;
+
+        case "caja":
+            appContent.innerHTML = renderCaja();
             break;
 
         case "inventario":
