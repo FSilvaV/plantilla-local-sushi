@@ -281,13 +281,13 @@ function renderPasoProductos() {
 
                                     ? `
                                         <img
-                                            src="${producto.imagen}"
-                                            alt="${producto.nombre}"
+                                            src="${DemoGastronomica.escapar(producto.imagen)}"
+                                            alt="${DemoGastronomica.escapar(producto.nombre)}"
                                         >
                                     `
 
                                     : `
-                                        <span>🍣</span>
+                                        <span>${DemoGastronomica.tipos[DemoGastronomica.tipo].icono}</span>
                                     `
                                 }
 
@@ -297,16 +297,16 @@ function renderPasoProductos() {
                             <div class="order-product-info">
 
                                 <small>
-                                    ${producto.categoria}
+                                    ${DemoGastronomica.escapar(producto.categoria)}
                                 </small>
 
                                 <h4>
-                                    ${producto.nombre}
+                                    ${DemoGastronomica.escapar(producto.nombre)}
                                 </h4>
 
                                 <p>
                                     ${
-                                        producto.descripcion ||
+                                        DemoGastronomica.escapar(producto.descripcion) ||
                                         "Sin descripción"
                                     }
                                 </p>
@@ -318,6 +318,13 @@ function renderPasoProductos() {
                                             producto.precio
                                         )}
                                     </strong>
+
+                                    <label class="order-product-select">
+                                        <input type="checkbox" aria-label="Seleccionar ${DemoGastronomica.escapar(producto.nombre)}"
+                                            ${nuevoPedido.productos.some(p => p.id === producto.id) ? 'checked' : ''}
+                                            onchange="seleccionarProductoPedido(${producto.id}, this.checked)">
+                                        <span>Seleccionar</span>
+                                    </label>
 
                                     <button
                                         onclick="
@@ -1953,6 +1960,12 @@ function agregarProductoPedido(id) {
         `${producto.nombre} agregado`
     );
 
+    refrescarNuevoPedido();
+}
+
+function seleccionarProductoPedido(id, seleccionado) {
+    if (seleccionado) return agregarProductoPedido(id);
+    nuevoPedido.productos = nuevoPedido.productos.filter(p => p.id !== id);
     refrescarNuevoPedido();
 }
 

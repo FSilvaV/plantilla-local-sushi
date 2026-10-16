@@ -1057,8 +1057,7 @@ button {
 .products-grid {
     display: grid;
 
-    grid-template-columns:
-        repeat(auto-fill, minmax(255px, 1fr));
+    grid-template-columns: 1fr;
 
     gap: 14px;
 
@@ -1872,8 +1871,7 @@ button {
 .order-products-grid {
     display: grid;
 
-    grid-template-columns:
-        repeat(auto-fill, minmax(210px, 1fr));
+    grid-template-columns: 1fr;
 
     gap: 12px;
 }
@@ -1881,7 +1879,7 @@ button {
 .order-product {
     display: grid;
 
-    grid-template-columns: 72px 1fr;
+    grid-template-columns: 96px 1fr;
 
     min-height: 120px;
 
@@ -1975,6 +1973,33 @@ button {
 
     font-size: 16px;
 }
+
+.demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    max-width: 440px;
+    padding: 8px;
+    border-radius: 10px;
+    background: #fff7e6;
+    color: #593b13;
+    font-size: 12px;
+}
+
+.demo-controls select, .demo-controls button {
+    border: 1px solid #d6b777;
+    border-radius: 7px;
+    padding: 6px;
+    background: white;
+    color: #3f2d13;
+    cursor: pointer;
+}
+
+.demo-controls small { flex-basis: 100%; line-height: 1.35; }
+.demo-note { padding: 10px 14px; margin: 0 0 12px; border-radius: 8px; background: #fff7e6; color: #593b13; font-size: 13px; }
+.order-product-select { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer; }
+.order-product-select input { width: 16px; height: 16px; accent-color: var(--primary); }
 
 
 /* =========================================================

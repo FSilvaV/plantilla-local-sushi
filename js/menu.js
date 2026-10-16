@@ -22,6 +22,8 @@ let busquedaMenu = "";
 
 function renderMenu() {
 
+    const categoriasMenu = ['Todos', ...new Set(ScartData.productos.map(p => p.categoria))];
+
     const productos =
         obtenerProductosFiltrados();
 
@@ -31,7 +33,7 @@ function renderMenu() {
 
             <div>
 
-                <h3>Productos del menú</h3>
+                <h3>Platillos y productos</h3>
 
                 <p>
                     Administra los productos disponibles
@@ -44,11 +46,13 @@ function renderMenu() {
                 class="btn btn-primary"
                 onclick="abrirModalProducto()"
             >
-                ＋ Nuevo producto
+                ＋ Nuevo platillo
             </button>
 
         </div>
 
+
+        <p class="demo-note">Menú referencial: precios, ingredientes e imágenes son ejemplos editables.</p>
 
         <!-- RESUMEN -->
 
@@ -253,6 +257,8 @@ function renderMenu() {
                             type="text"
                             placeholder="Ej: California Roll"
                             required
+                            maxlength="90"
+                            oninput="this.value = this.value.toLocaleUpperCase('es-CL')"
                         >
 
                     </div>
@@ -298,6 +304,8 @@ function renderMenu() {
                                 id="product-price"
                                 type="number"
                                 min="0"
+                                step="1"
+                                inputmode="numeric"
                                 placeholder="8900"
                                 required
                             >
@@ -329,13 +337,13 @@ Salmón, palta, queso crema...
                         <label>
                             URL de imagen
                             <span class="optional">
-                                Opcional
+                                Opcional; se muestra una imagen de referencia por defecto
                             </span>
                         </label>
 
                         <input
                             id="product-image"
-                            type="text"
+                            type="url"
                             placeholder="
 assets/img/california-roll.jpg
                             "
@@ -397,14 +405,14 @@ function crearCardProducto(producto) {
 
                     ? `
                         <img
-                            src="${producto.imagen}"
-                            alt="${producto.nombre}"
+                            src="${DemoGastronomica.escapar(producto.imagen)}"
+                            alt="${DemoGastronomica.escapar(producto.nombre)}"
                         >
                     `
 
                     : `
                         <div class="product-placeholder">
-                            🍣
+                            ${DemoGastronomica.tipos[DemoGastronomica.tipo].icono}
                         </div>
                     `
                 }
@@ -433,16 +441,16 @@ function crearCardProducto(producto) {
             <div class="product-body">
 
                 <span class="product-category">
-                    ${producto.categoria}
+                    ${DemoGastronomica.escapar(producto.categoria)}
                 </span>
 
                 <h3>
-                    ${producto.nombre}
+                    ${DemoGastronomica.escapar(producto.nombre)}
                 </h3>
 
                 <p>
                     ${
-                        producto.descripcion ||
+                        DemoGastronomica.escapar(producto.descripcion) ||
                         "Sin descripción registrada."
                     }
                 </p>
@@ -571,6 +579,8 @@ function cambiarDisponibilidadProducto(id) {
     producto.activo =
         !producto.activo;
 
+    DemoGastronomica.guardar();
+
 
     mostrarToast(
         producto.activo
@@ -639,7 +649,7 @@ function guardarProducto(event) {
     const nombre =
         document.getElementById(
             "product-name"
-        ).value.trim();
+        ).value.trim().toLocaleUpperCase('es-CL');
 
 
     const categoria =
@@ -667,6 +677,16 @@ function guardarProducto(event) {
             "product-image"
         ).value.trim();
 
+
+    if (!nombre || /[<>"']/.test(nombre + descripcion) || !Number.isSafeInteger(precio) || precio < 0) {
+        mostrarToast('Ingresa un nombre y un precio válido en pesos.');
+        return;
+    }
+
+    if (imagen && !/^https?:\/\//i.test(imagen)) {
+        mostrarToast('La imagen debe usar una URL http o https.');
+        return;
+    }
 
     if (id) {
 
@@ -727,6 +747,7 @@ function guardarProducto(event) {
     }
 
 
+    DemoGastronomica.guardar();
     cerrarModalProducto();
 
     refrescarMenu();

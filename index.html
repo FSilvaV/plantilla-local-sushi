@@ -102,6 +102,18 @@
             <!-- HEADER -->
 
             <header class="topbar">
+                <div class="demo-controls">
+                    <label for="tipo-local">Tipo de local</label>
+                    <select id="tipo-local" onchange="DemoGastronomica.cambiar(this.value)">
+                        <option value="sushi">🍣 Sushi</option>
+                        <option value="rapida">🍟 Comida rápida</option>
+                        <option value="pizzeria">🍕 Pizzería</option>
+                        <option value="parrilla">🥩 Parrilla</option>
+                        <option value="variada">🍽️ Comida variada</option>
+                    </select>
+                    <button type="button" onclick="DemoGastronomica.reiniciar()">Reiniciar prueba</button>
+                    <small>Demo referencial. Este sitio y sus datos se pueden adaptar a cada negocio.</small>
+                </div>
 
                 <div class="topbar-title">
                     <h2 id="page-title">Dashboard</h2>
@@ -201,6 +213,7 @@
     ====================================================== -->
 
     <script src="js/data.js"></script>
+    <script src="js/demo.js"></script>
 
     <script src="js/pedidos.js"></script>
     <script src="js/mesas.js"></script>

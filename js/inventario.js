@@ -57,13 +57,6 @@ function renderInventario() {
         + Nuevo insumo
     </button>
 
-    <button
-        class="btn-primary"
-        onclick="abrirMovimientoInventario()"
-    >
-        + Registrar movimiento
-    </button>
-
             </div>
             </div>
 
@@ -265,14 +258,6 @@ function renderInventarioFila(item) {
 
                     <button
                         class="btn-secondary"
-                        onclick="abrirMovimientoInventario(${item.id})"
-                        ${!item.activo ? "disabled" : ""}
-                    >
-                        Movimiento
-                    </button>
-
-                    <button
-                        class="btn-secondary"
                         onclick="cambiarEstadoInsumo(${item.id})"
                     >
                         ${item.activo ? "Desactivar" : "Activar"}
@@ -438,6 +423,7 @@ function abrirNuevoInsumo() {
                             id="nuevo-insumo-nombre"
                             type="text"
                             placeholder="Ej: Salmón"
+                            oninput="this.value = this.value.toLocaleUpperCase('es-CL')"
                         >
                     </label>
 
@@ -540,6 +526,11 @@ function abrirNuevoInsumo() {
                     </label>
 
                     <label>
+                        <span>Stock inicial</span>
+                        <input id="nuevo-insumo-stock" type="number" min="0" step="0.01" inputmode="decimal" value="0">
+                    </label>
+
+                    <label>
                         <span>Stock mínimo</span>
 
                         <input
@@ -632,7 +623,7 @@ function guardarNuevoInsumo() {
     const nombre = document
         .getElementById("nuevo-insumo-nombre")
         .value
-        .trim();
+        .trim().toLocaleUpperCase('es-CL');
 
     const categoria = document
         .getElementById("nuevo-insumo-categoria")
@@ -648,10 +639,12 @@ function guardarNuevoInsumo() {
         ).value
     );
 
+    const stockInicial = Number(document.getElementById('nuevo-insumo-stock').value);
+
 
     /* VALIDACIONES */
 
-    if (!nombre) {
+    if (!nombre || /[<>"']/.test(nombre)) {
         mostrarToast(
             "Ingresa el nombre del insumo."
         );
@@ -678,7 +671,7 @@ function guardarNuevoInsumo() {
     }
 
 
-    if (stockMinimo < 0) {
+    if (!Number.isFinite(stockInicial) || stockInicial < 0 || !Number.isFinite(stockMinimo) || stockMinimo < 0) {
         mostrarToast(
             "El stock no puede ser negativo."
         );
@@ -727,7 +720,7 @@ function guardarNuevoInsumo() {
         nombre: nombre,
         categoria: categoria,
         unidad: unidad,
-        stock: 0,
+        stock: Number(stockInicial.toFixed(2)),
         stockMinimo: Number(
             stockMinimo.toFixed(2)
         ),
@@ -738,6 +731,16 @@ function guardarNuevoInsumo() {
     ScartData.inventario.push(
         nuevoInsumo
     );
+
+    if (stockInicial > 0) {
+        ScartData.movimientosInventario.unshift({
+            id: Date.now(), itemId: nuevoId, itemNombre: nombre, tipo: 'entrada',
+            cantidad: nuevoInsumo.stock, unidad, stockAnterior: 0,
+            stockNuevo: nuevoInsumo.stock, motivo: 'Stock inicial',
+            observacion: '', fecha: new Date().toISOString()
+        });
+    }
+    DemoGastronomica.guardar();
 
     cerrarNuevoInsumo();
 
@@ -871,6 +874,10 @@ function abrirEditarInsumo(itemId) {
 
             <div class="pedido-modal-footer">
 
+                <button class="btn-secondary" onclick="cerrarEditarInsumo(); abrirMovimientoInventario(${item.id})" ${!item.activo ? 'disabled' : ''}>
+                    Registrar movimiento
+                </button>
+
                 <button
                     class="btn-secondary"
                     onclick="cerrarEditarInsumo()"
@@ -933,7 +940,7 @@ function guardarEdicionInsumo(itemId) {
         ).value
     );
 
-    if (!nombre) {
+    if (!nombre || /[<>"']/.test(nombre)) {
         mostrarToast("Ingresa el nombre del insumo.");
         return;
     }
@@ -969,13 +976,14 @@ function guardarEdicionInsumo(itemId) {
         return;
     }
 
-    item.nombre = nombre;
+    item.nombre = nombre.toLocaleUpperCase('es-CL');
     item.categoria = categoria;
     item.unidad = unidad;
     item.stockMinimo = Number(
         stockMinimo.toFixed(2)
     );
 
+    DemoGastronomica.guardar();
     cerrarEditarInsumo();
 
     mostrarToast(
@@ -1087,6 +1095,7 @@ function cambiarEstadoInsumo(itemId) {
     }
 
     item.activo = !item.activo;
+    DemoGastronomica.guardar();
 
     mostrarToast(
         item.activo
@@ -1602,6 +1611,7 @@ function guardarMovimientoInventario() {
     });
 
 
+    DemoGastronomica.guardar();
     cerrarMovimientoInventario();
 
     mostrarToast(
