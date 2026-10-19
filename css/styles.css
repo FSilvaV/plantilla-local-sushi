@@ -5648,6 +5648,67 @@ button {
     color: #64748b;
 }
 
+/* ==========================================
+   PEDIDOS - BOTONES UNIFORMES
+========================================== */
+
+.pedido-card-footer {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+}
+
+.pedido-card-footer button {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: #f4f6f8;
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+}
+
+.pedido-card-footer button:nth-child(2) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.pedido-card-footer button:hover {
+    filter: brightness(0.96);
+}
+
+/* Botón siguiente dentro del resumen */
+
+.summary-next-btn {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 16px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.summary-next-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
 /* =========================================================
    FIN DEL ARCHIVO
 ========================================================= */
