@@ -166,6 +166,43 @@ function renderPasoActualPedido() {
    PASO 1 - PRODUCTOS
 ========================================================= */
 
+function agregarVentaLibrePedido() {
+    const inputNombre = document.getElementById(
+        "venta-libre-nombre"
+    );
+
+    const inputPrecio = document.getElementById(
+        "venta-libre-precio"
+    );
+
+    const nombre = inputNombre.value.trim() || "Venta libre";
+    const precio = Number(inputPrecio.value);
+
+    if (
+        !Number.isSafeInteger(precio) ||
+        precio <= 0
+    ) {
+        mostrarToast("Ingresa un monto válido mayor a $0");
+        return;
+    }
+
+    const id = `libre-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 9)}`;
+
+    nuevoPedido.productos.push({
+        id,
+        tipo: "libre",
+        nombre,
+        precio,
+        cantidad: 1
+    });
+
+    mostrarToast("Venta libre agregada correctamente");
+
+    refrescarNuevoPedido();
+}
+
 function renderPasoProductos() {
 
     const categorias = [
@@ -264,6 +301,44 @@ function renderPasoProductos() {
 
             </div>
 
+            <div class="form-section">
+                <h4>🧾 Venta libre</h4>
+                <p>
+                    Agrega un producto o servicio que no esté
+                    registrado en el catálogo.
+                </p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input
+                            id="venta-libre-nombre"
+                            type="text"
+                            maxlength="100"
+                            placeholder="Ej: Producto especial"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monto ($)</label>
+                        <input
+                            id="venta-libre-precio"
+                            type="number"
+                            min="1"
+                            step="1"
+                            placeholder="Ej: 2500"
+                        >
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="agregarVentaLibrePedido()"
+                >
+                    ＋ Agregar venta libre
+                </button>
+            </div>
 
             <div class="order-products-grid">
 
@@ -272,7 +347,11 @@ function renderPasoProductos() {
 
                     ? productos.map(producto => `
 
-                        <article class="order-product">
+                        <article class="order-product ${
+                            nuevoPedido.productos.some(p => p.id === producto.id)
+                                ? "is-added"
+                                : ""
+                                }">
 
                             <div class="order-product-image">
 
@@ -319,21 +398,21 @@ function renderPasoProductos() {
                                         )}
                                     </strong>
 
-                                    <label class="order-product-select">
-                                        <input type="checkbox" aria-label="Seleccionar ${DemoGastronomica.escapar(producto.nombre)}"
-                                            ${nuevoPedido.productos.some(p => p.id === producto.id) ? 'checked' : ''}
-                                            onchange="seleccionarProductoPedido(${producto.id}, this.checked)">
-                                        <span>Seleccionar</span>
-                                    </label>
-
                                     <button
-                                        onclick="
-                                            agregarProductoPedido(
-                                                ${producto.id}
-                                            )
-                                        "
+                                        type="button"
+                                        class="${
+                                            nuevoPedido.productos.some(p => p.id === producto.id)
+                                                ? "is-added"
+                                                : ""
+                                        }"
+                                        aria-label="Agregar ${DemoGastronomica.escapar(producto.nombre)}"
+                                        onclick="agregarProductoPedido(${producto.id})"
                                     >
-                                        ＋
+                                        ${
+                                            nuevoPedido.productos.some(p => p.id === producto.id)
+                                                ? "✓"
+                                                : "+"
+                                        }
                                     </button>
 
                                 </div>
@@ -363,19 +442,6 @@ function renderPasoProductos() {
 
                     `
                 }
-
-            </div>
-
-
-            <div class="wizard-actions right">
-
-                <button
-                    class="btn btn-primary"
-                    onclick="irPasoPedido(2)"
-                    ${nuevoPedido.productos.length ? "" : "disabled"}
-                >
-                    Siguiente →
-                </button>
 
             </div>
 
@@ -1858,7 +1924,7 @@ function renderResumenPedido() {
                                 <button
                                     onclick="
                                         cambiarCantidadPedido(
-                                            ${item.id},
+                                            ${JSON.stringify(item.id)},
                                             -1
                                         )
                                     "
@@ -1873,7 +1939,7 @@ function renderResumenPedido() {
                                 <button
                                     onclick="
                                         cambiarCantidadPedido(
-                                            ${item.id},
+                                            ${JSON.stringify(item.id)},
                                             1
                                         )
                                     "
@@ -1916,9 +1982,23 @@ function renderResumenPedido() {
 
         </div>
 
+        ${
+            pasoNuevoPedido === 1
+                ? `
+                    <button
+                        type="button"
+                        class="btn btn-primary summary-next-btn"
+                        ${nuevoPedido.productos.length === 0 ? "disabled" : ""}
+                        onclick="irPasoPedido(2)"
+                    >
+                        Siguiente →
+                    </button>
+                `
+                : ""
+        }
+
     `;
 }
-
 
 /* =========================================================
    PRODUCTOS

@@ -60,6 +60,11 @@ const pages = {
             "Registro y estadísticas de ventas"
     },
 
+    clientes: {
+        title: "Clientes",
+        description: "Registro de clientes, fiados y abonos"
+    },
+
     caja: {
         title: "Caja",
         description:
@@ -159,6 +164,11 @@ function cargarPagina(page) {
 
         case "ventas":
             appContent.innerHTML = renderVentas();
+            break;
+
+        case "clientes":
+            appContent.innerHTML = renderClientes();
+            iniciarClientes();
             break;
 
         case "caja":
